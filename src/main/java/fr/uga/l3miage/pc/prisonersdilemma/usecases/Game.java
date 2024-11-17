@@ -1,8 +1,8 @@
 package fr.uga.l3miage.pc.prisonersdilemma.usecases;
 
-import fr.uga.l3miage.pc.prisonersdilemma.controllers.GameController;
+
 import fr.uga.l3miage.pc.prisonersdilemma.entities.Player;
-import fr.uga.l3miage.pc.prisonersdilemma.services.Commands.*;
+
 import fr.uga.l3miage.pc.prisonersdilemma.services.GameService;
 import fr.uga.l3miage.pc.prisonersdilemma.services.Round;
 import fr.uga.l3miage.pc.prisonersdilemma.services.Strategy;
@@ -11,7 +11,7 @@ import fr.uga.l3miage.pc.prisonersdilemma.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.web.socket.TextMessage;
+
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.UUID;
@@ -77,8 +77,8 @@ public class Game {
 
             } catch (InterruptedException e) {
                 //TODO : gérer ceci en faisant un continue (saut) après avoir aretiré +1 a playedRound ou arreter la partie
-                e.printStackTrace();
-                logger.error(e.getMessage());
+                //e.printStackTrace();
+                //logger.error(e.getMessage());
                 logger.error("Crash of synchronisation process, Bye Bye");
                 finished = true;
                 break;
@@ -98,8 +98,8 @@ public class Game {
                 activeRound.waitForTheGameResultConsultation();
             } catch (InterruptedException e) {
                 //TODO
-                e.printStackTrace();
-                logger.error(e.getMessage());
+                //e.printStackTrace();
+                //logger.error(e.getMessage());
                 logger.error("Crash of result synchronisation process, Bye Bye");
                 finished = true;
                 //TODO sendMessage
@@ -130,8 +130,8 @@ public class Game {
                 activeRound.countAPlayerChoice();
             } catch (InterruptedException e) {
                 //TODO : gérer ceci en faisant un continue (saut) après avoir aretiré +1 a playedRound ou arreter la partie
-                e.printStackTrace();
-                logger.error(e.getMessage());
+                //e.printStackTrace();
+                //logger.error(e.getMessage());
                 logger.error("Crash of synchronisation update process, Bye Bye");
                 return new ApiResponse<>(500, "Crash of synchronisation update process", playGame, this);
             }
@@ -142,8 +142,8 @@ public class Game {
                 activeRound.countAPlayerChoice();
             } catch (InterruptedException e) {
                 //TODO : gérer ceci en faisant un continue (saut) après avoir retiré +1 a playedRound ou arreter la partie
-                e.printStackTrace();
-                logger.error(e.getMessage());
+                //e.printStackTrace();
+                //logger.error(e.getMessage());
                 logger.error("Crash of synchronisation update process, Bye Bye");
                 return new ApiResponse<>(500, "Crash of synchronisation update process", playGame, this);
             }

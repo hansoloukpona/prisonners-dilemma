@@ -21,16 +21,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry config) {
         // Configure the broker to handle messages sent to the "/api/game/clients" topic
         config.enableSimpleBroker("/api/game/clients");
-        //config.setApplicationDestinationPrefixes("/api/game/server");
+        
     }
 
 }
-/*@Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new WebSocketHandler(), "/api/game/server/new")
-                .setAllowedOrigins("*");
-    }@Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new WebSocketHandler(), "/api/game/server/new")
-                .setAllowedOrigins("*");
-    }*/

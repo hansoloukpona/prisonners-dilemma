@@ -109,7 +109,7 @@ public class Player implements PlayingObject {
     }
 
     public void updateScore(int points) {
-        this.score =+ points ;
+        this.score+= points ;
     }
 
 

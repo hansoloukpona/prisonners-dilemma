@@ -6,13 +6,14 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.1.12</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/> 
     </parent>
-    <groupId>com.example</groupId>
-    <artifactId>demo</artifactId>
+    
+    <groupId>fr.uga.miage.m1</groupId>
+	<artifactId>dilemme_g2_6</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>demo</name>
-    <description>Demo project for Spring Boot</description>
+    <name>dilemme_g2_6</name>
+    <description>Projet Dilemme de prisonnier Group2_6</description>
     <url/>
     <licenses>
         <license/>
@@ -32,7 +33,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <sonar.host.url>https://im2ag-sonar.univ-grenoble-alpes.fr</sonar.host.url>
-        <sonar.login>squ_4f455d59c47a0124ab776653035927f69989ec09</sonar.login>
+        
     </properties>
     <dependencies>
         <dependency>
@@ -53,7 +54,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.10.3</version>
+            
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -70,16 +71,19 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.8.1</version>
                 </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.0.0-M5</version>
-                </plugin>
+                
                 <plugin>
                     <groupId>org.sonarsource.scanner.maven</groupId>
                     <artifactId>sonar-maven-plugin</artifactId>
                     <version>4.0.0.4121</version>
                 </plugin>
+                <plugin>
+   					<groupId>org.apache.maven.plugins</groupId>
+    				<artifactId>maven-surefire-plugin</artifactId>
+    				<version>3.0.0</version>
+    				
+				</plugin>
+
                 <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>

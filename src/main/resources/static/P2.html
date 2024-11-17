@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rejoindre une Partie</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f9f9f9;
+        }
+        .container {
+            border: 2px solid black;
+            padding: 20px;
+            width: 500px;
+            background: white;
+        }
+        .container h1 {
+            text-align: center;
+        }
+        .players-list, .create-game {
+            margin-top: 20px;
+        }
+        .players-list button, .create-game button {
+            background-color: #f5f5dc;
+            border: 1px solid black;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .create-game input {
+            width: 50px;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>REJOINDRE UNE PARTIE :</h1>
+        <div class="players-list">
+            <p>Liste de joueurs en attente d'un 2ème joueur :</p>
+            <p>Blaise <button>JOUER</button></p>
+            <p>Blaise <button>JOUER</button></p>
+            <p>Blaise <button>JOUER</button></p>
+        </div>
+        <div class="create-game">
+            <h2>Créer nouvelle partie :</h2>
+            <p>Nombre round : <input type="text" placeholder="0"> <button>Valider</button></p>
+        </div>
+    </div>
+</body>
+</html>

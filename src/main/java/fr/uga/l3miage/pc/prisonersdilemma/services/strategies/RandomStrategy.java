@@ -3,11 +3,17 @@ package fr.uga.l3miage.pc.prisonersdilemma.services.strategies;
 import fr.uga.l3miage.pc.prisonersdilemma.services.Strategy;
 import fr.uga.l3miage.pc.prisonersdilemma.utils.Decision;
 
-import java.util.Random;
+import java.security.SecureRandom;
+
 
 public class RandomStrategy implements Strategy {
+	
+	
 
-    private Random random = new Random();
+	private SecureRandom random = new SecureRandom();
+
+
+    //private Random random = new Random();
 
     @Override
     public Decision nextMove(Decision precMove) {
