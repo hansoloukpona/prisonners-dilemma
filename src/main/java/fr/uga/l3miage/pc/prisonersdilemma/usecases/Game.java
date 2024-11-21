@@ -2,7 +2,6 @@ package fr.uga.l3miage.pc.prisonersdilemma.usecases;
 
 
 import fr.uga.l3miage.pc.prisonersdilemma.entities.Player;
-
 import fr.uga.l3miage.pc.prisonersdilemma.services.GameService;
 import fr.uga.l3miage.pc.prisonersdilemma.services.Round;
 import fr.uga.l3miage.pc.prisonersdilemma.services.Strategy;
@@ -11,7 +10,6 @@ import fr.uga.l3miage.pc.prisonersdilemma.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
-
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.UUID;
@@ -32,16 +30,16 @@ public class Game {
     private final Player thePlayer1;
     private Player thePlayer2;
 
-    public Game(int rounds, String player1Name, WebSocketSession player1Session) {
+    public Game(int rounds, Player player1) {
         this.gameId = UUID.randomUUID();
         this.totalRounds = rounds;
-        this.thePlayer1 = new Player(player1Name, player1Session);
+        this.thePlayer1 = player1;
     }
     public ApiResponse<Game> joinGame(String player2Name, WebSocketSession player2Session) {
         if (!this.availableToJoin) {
             return new ApiResponse<>(200, "Cette partie est déjà complète", joinGame,null);
         }
-        this.thePlayer2 = new Player(player2Name, player2Session);
+        this.thePlayer2 = new Player(player2Name, playerSession);
         this.gameService = new GameService();
         this.availableToJoin = false;
         return new ApiResponse<>(200, "OK", joinGame, this);

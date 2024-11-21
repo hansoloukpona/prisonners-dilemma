@@ -3,12 +3,11 @@ package fr.uga.l3miage.pc.prisonersdilemma.configs;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.uga.l3miage.pc.prisonersdilemma.services.Commands.*;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
@@ -85,28 +84,5 @@ public class WebSocketHandler extends TextWebSocketHandler {
             }
         }
     }*/
-
-
-    public static ActionGame getCommand(String messageType, WebSocketSession session) {
-
-        switch (messageType) {
-            case createGame:
-                return new CreateGame();
-            case joinGame:
-                return new JoinGame();
-            case playGame:
-                return new PlayGame();
-            case getGameState:
-                return new GetGameState();
-            case getResults:
-                return new GetResults();
-            case giveUpGame:
-                return new GiveUpGame();
-            // Ajouter d'autres types de messages selon les besoins
-            default:
-                log.error("Type de message inconnus");
-                return null;
-        }
-    }
 
 }

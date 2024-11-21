@@ -1,17 +1,19 @@
 package fr.uga.l3miage.pc.prisonersdilemma.services;
 
 import fr.uga.l3miage.pc.prisonersdilemma.entities.Player;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+@AllArgsConstructor
+@Service
 public class GameService {
 
     private static final Logger logger = LoggerFactory.getLogger(GameService.class);
-
-    public GameService() {
-    }
 
     public boolean playerIsPresentInTheGame(Player thePlayer) {
         if (thePlayer == null || !thePlayer.getConnected()) {

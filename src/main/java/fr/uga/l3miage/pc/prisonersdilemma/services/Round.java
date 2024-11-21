@@ -1,7 +1,12 @@
 package fr.uga.l3miage.pc.prisonersdilemma.services;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 import java.util.concurrent.CountDownLatch;
 
+
+@Data
 public class Round {
 
     private CountDownLatch choiceFollower;
@@ -55,26 +60,6 @@ public class Round {
     public void waitForTheGameResultConsultation() throws InterruptedException {
         resultConsultationFollower.await();
         readyForResultConsultation = true;
-    }
-
-    public boolean isReadyForResultConsultation() {
-        return readyForResultConsultation;
-    }
-
-    public boolean isReadyForRoundResultConsultation() {
-        return readyForRoundResultConsultation;
-    }
-
-    public boolean isReadyForPlayersChoices() {
-        return readyForPlayersChoices;
-    }
-
-    public String getResulDataCompilation() {
-        return resulDataCompilation;
-    }
-
-    public void setResulDataCompilation(String resulDataCompilation) {
-        this.resulDataCompilation = resulDataCompilation;
     }
 }
 

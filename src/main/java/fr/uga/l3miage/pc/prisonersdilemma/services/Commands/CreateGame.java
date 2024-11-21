@@ -15,6 +15,6 @@ public class CreateGame implements ActionGame {
     public void execute(WebSocketSession session, ObjectMapper objectMapper, TextMessage message) throws IOException {
         ApiResponse<GameCreationDTO> apiCreateGameResponse = objectMapper.readValue(message.getPayload(), ApiResponse.class);
 
-        GameController.createGame(apiCreateGameResponse.getData().getRounds(), apiCreateGameResponse.getData().getPlayerName(), session);
+        //GameController.createGame(apiCreateGameResponse.getData().getRounds(), apiCreateGameResponse.getData().getPlayerName(), session);
     }
 }
