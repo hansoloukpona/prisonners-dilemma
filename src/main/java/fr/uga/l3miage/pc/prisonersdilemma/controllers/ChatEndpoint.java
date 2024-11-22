@@ -1,6 +1,6 @@
 package fr.uga.l3miage.pc.prisonersdilemma.controllers;
 
-import fr.uga.l3miage.pc.prisonersdilemma.entities.Message;
+import fr.uga.l3miage.pc.prisonersdilemma.entities.SimpleInformationExchange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,14 +8,12 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
-import java.security.Principal;
 
 @Controller
 public class ChatEndpoint {
@@ -26,12 +24,12 @@ public class ChatEndpoint {
     private SimpMessagingTemplate simpMessagingTemplate;
 
     @SubscribeMapping("/posts/get")
-    public Message findAll() throws IOException {
+    public SimpleInformationExchange findAll() throws IOException {
 
         log.info("Connection attempt by user: ");
         log.info("Session ID: ");
 
-        Message message = new Message();
+        SimpleInformationExchange message = new SimpleInformationExchange();
 
         message.setContent("Retourned!");
 
@@ -48,7 +46,7 @@ public class ChatEndpoint {
     }
 
     @MessageMapping("/exchange")
-    public void exchange(@Payload Message message) {
+    public void exchange(@Payload SimpleInformationExchange message) {
         String fromUser = message.getFrom(); // Expéditeur (nom de l'utilisateur connecté)
         String toUser = message.getTo();      // Destinataire spécifié dans le message
 
@@ -63,7 +61,7 @@ public class ChatEndpoint {
 
     @MessageMapping("/posts/created")
     @SendToUser("/dilemma-game/clients/private/play")
-    public Message saveOne(@Payload Message message) {
+    public SimpleInformationExchange saveOne(@Payload SimpleInformationExchange message) {
         // Do error handling here
         log.info("Sending message: " + message);
         message.setContent("Salade");
@@ -75,7 +73,7 @@ public class ChatEndpoint {
 
     @MessageMapping("/posts/updated")
     @SendTo("/dilemma-game/clients/public/posts/updated")
-    public Message saveTwo(Message message) {
+    public SimpleInformationExchange saveTwo(SimpleInformationExchange message) {
         // Do error handling here
         log.info("Sending message: " + message);
         message.setContent("Chou Fleur");

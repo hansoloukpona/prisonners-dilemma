@@ -1,10 +1,9 @@
 package fr.uga.l3miage.pc.prisonersdilemma.configs;
 
-import fr.uga.l3miage.pc.prisonersdilemma.entities.Message;
+import fr.uga.l3miage.pc.prisonersdilemma.entities.SimpleInformationExchange;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
 //@Component //Ceci est une option, On ne se servira pas de ceci pour ce projet
@@ -21,7 +20,7 @@ public class WebSocketEventListener {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = headerAccessor.getSessionId();
 
-        String username = headerAccessor.getFirstNativeHeader("username");
+        //String username = headerAccessor.getFirstNativeHeader("username");
 
         // Associez ce sessionId à un utilisateur si nécessaire
         /*String destination = headerAccessor.getDestination();
@@ -29,7 +28,7 @@ public class WebSocketEventListener {
             //Tout va bien
         }*/
 
-        Message message = new Message();
+        SimpleInformationExchange message = new SimpleInformationExchange();
         message.setContent(sessionId);
         messagingTemplate.convertAndSend("/dilemma-game/clients/private/direct-user" + sessionId , message);
     }

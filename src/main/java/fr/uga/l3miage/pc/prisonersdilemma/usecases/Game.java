@@ -7,39 +7,51 @@ import fr.uga.l3miage.pc.prisonersdilemma.services.Round;
 import fr.uga.l3miage.pc.prisonersdilemma.services.Strategy;
 import fr.uga.l3miage.pc.prisonersdilemma.services.strategies.*;
 import fr.uga.l3miage.pc.prisonersdilemma.utils.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.web.socket.WebSocketSession;
 
 import java.util.UUID;
 
 import static fr.uga.l3miage.pc.prisonersdilemma.utils.Type.*;
 
-
+@AllArgsConstructor
+@RequiredArgsConstructor
+@Data
 public class Game {
 
     private static final Logger logger = LoggerFactory.getLogger(Game.class);
 
-    private final int totalRounds;
+    private int totalRounds;
     private GameService gameService;
     private int playedRound = 0;
     private boolean availableToJoin = true;
-    private final UUID gameId;
+    private UUID gameId;
     private Round activeRound;
-    private final Player thePlayer1;
+    private Player thePlayer1;
     private Player thePlayer2;
 
-    public Game(int rounds, Player player1) {
+    //private String sessionsIdInitiation;
+    //private SimpMessagingTemplate simpMessagingTemplate;
+
+    /*public Game(String sessionsIdInitiation) {
+        this.sessionsIdInitiation = sessionsIdInitiation;
+    }*/
+
+    public Game(int rounds, Player player1/*, SimpMessagingTemplate simpMessagingTemplate*/) {
         this.gameId = UUID.randomUUID();
         this.totalRounds = rounds;
         this.thePlayer1 = player1;
+        //this.simpMessagingTemplate = simpMessagingTemplate;
     }
-    public ApiResponse<Game> joinGame(String player2Name, WebSocketSession player2Session) {
+    public ApiResponse<Game> joinGame(Player player2) {
         if (!this.availableToJoin) {
-            return new ApiResponse<>(200, "Cette partie est déjà complète", joinGame,null);
+            return new ApiResponse<>(200, "Cette partie est déjà complète", joinGame);
         }
-        this.thePlayer2 = new Player(player2Name, playerSession);
+        this.thePlayer2 = player2;
         this.gameService = new GameService();
         this.availableToJoin = false;
         return new ApiResponse<>(200, "OK", joinGame, this);
@@ -69,9 +81,10 @@ public class Game {
                 //TODO Envoyer aux 2 tout simplement et on passe au tour suivant
                 /*activeRound.waitForRoundResultConsultation();*/
 
-                ApiResponse<Game> response = new ApiResponse<>(200, "Roud " + this.playedRound + 1 + " end successfuly", giveUpGame, this);
-                thePlayer1.sendToPlayer(response);
-                thePlayer2.sendToPlayer(response);
+                ApiResponse<Game> response = new ApiResponse<>(200, "Roud " + this.playedRound + 1 + " end successfuly", playGame, this);
+
+                //thePlayer1.sendToPlayer(this.simpMessagingTemplate, response);
+                //thePlayer2.sendToPlayer(this.simpMessagingTemplate, response);
 
             } catch (InterruptedException e) {
                 //TODO : gérer ceci en faisant un continue (saut) après avoir aretiré +1 a playedRound ou arreter la partie
@@ -226,7 +239,7 @@ public class Game {
     public ApiResponse<String> displayResults() {
 
         if (!activeRound.isReadyForResultConsultation())
-            return new ApiResponse<>(503, "The game final results aren't available yet", displayResults, "");
+            return new ApiResponse<>(503, "The game final results aren't available yet", displayResults);
 
         //The # will serve to split the strig on the user client to display them one by one
 
@@ -243,6 +256,7 @@ public class Game {
         } else {
             resultsText = resultsText + "\n" + "It's a tie!";
         }
+
         return new ApiResponse<>(200, "OK", displayResults, resultsText);
     }
 

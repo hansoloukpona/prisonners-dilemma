@@ -1,15 +1,19 @@
 package fr.uga.l3miage.pc.prisonersdilemma.entities;
 
+import fr.uga.l3miage.pc.prisonersdilemma.configs.WebSocketSubscribeEventListener;
 import fr.uga.l3miage.pc.prisonersdilemma.controllers.GameController;
 import fr.uga.l3miage.pc.prisonersdilemma.services.Strategy;
 import fr.uga.l3miage.pc.prisonersdilemma.utils.Decision;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.UUID;
 
 @AllArgsConstructor
+@RequiredArgsConstructor
 @Data
 public class Player implements PlayingObject {
     private String name;
@@ -44,10 +48,10 @@ public class Player implements PlayingObject {
         return this.actualRoundDecision;
     }
 
-    public void sendToPlayer(String destination, Object message) {
-        if (this.isConnected) {
-            GameController.sendToClient(destination, playerSessionId, message);
-        }
+    public void sendToPlayer(SimpMessagingTemplate simpMessagingTemplate, Object message) {
+        /*if (this.isConnected) {
+            WebSocketSubscribeEventListener.sendMessageToUser(simpMessagingTemplate, playerSessionId, message);
+        }*/
     }
 
     public void giveUp(Strategy strategyAfterPlayerDeparture) {
@@ -60,4 +64,63 @@ public class Player implements PlayingObject {
     }
 
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public boolean isConnected() {
+        return isConnected;
+    }
+
+    public Strategy getStrategy() {
+        return strategy;
+    }
+
+    public void setStrategy(Strategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public UUID getPlayerId() {
+        return playerId;
+    }
+
+    public void setPlayerId(UUID playerId) {
+        this.playerId = playerId;
+    }
+
+    public Decision getActualRoundDecision() {
+        return actualRoundDecision;
+    }
+
+    public void setActualRoundDecision(Decision actualRoundDecision) {
+        this.actualRoundDecision = actualRoundDecision;
+    }
+
+    public Decision getOpponentLastDecision() {
+        return opponentLastDecision;
+    }
+
+    public void setOpponentLastDecision(Decision opponentLastDecision) {
+        this.opponentLastDecision = opponentLastDecision;
+    }
+
+    public String getPlayerSessionId() {
+        return playerSessionId;
+    }
+
+    public void setPlayerSessionId(String playerSessionId) {
+        this.playerSessionId = playerSessionId;
+    }
 }

@@ -9,5 +9,6 @@ public class Type {
     public static final String displayResults = "displayResults";
     public static final String getResults = "getResults";
     public static final String getGamesList = "getGamesList";
+    public static final String sessionIdInitiation = "sessionIdInitiation";
 
 }

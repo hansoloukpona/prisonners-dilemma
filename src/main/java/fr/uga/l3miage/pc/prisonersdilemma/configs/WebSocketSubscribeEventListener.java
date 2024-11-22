@@ -1,11 +1,15 @@
 package fr.uga.l3miage.pc.prisonersdilemma.configs;
 
-import fr.uga.l3miage.pc.prisonersdilemma.entities.Message;
+import fr.uga.l3miage.pc.prisonersdilemma.entities.SimpleInformationExchange;
+import fr.uga.l3miage.pc.prisonersdilemma.utils.ApiResponse;
 import org.springframework.context.ApplicationListener;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
+
+import static fr.uga.l3miage.pc.prisonersdilemma.utils.Type.*;
 
 @Component
 public class WebSocketSubscribeEventListener implements ApplicationListener<SessionSubscribeEvent> {
@@ -23,23 +27,18 @@ public class WebSocketSubscribeEventListener implements ApplicationListener<Sess
         // Récupération du sessionId et de la destination
         String sessionId = headerAccessor.getSessionId();
         String destination = headerAccessor.getDestination();
-        //String usernameWhat = headerAccessor.getUser().getName(); //User is link to Principal
-
-        String username = headerAccessor.getFirstNativeHeader("username");
-        System.out.println("username : " + username);
 
         if (destination != null && destination.contains("/private/direct")) {
-            sendMessageToUser(simpMessagingTemplate, sessionId);
+            SimpleInformationExchange message = new SimpleInformationExchange();
+            message.setContent(sessionId);
+            sendMessageToUser(simpMessagingTemplate, sessionId, new ApiResponse<>(200, "OK", sessionIdInitiation ,message));
         }
     }
 
-    public static void sendMessageToUser(SimpMessagingTemplate simpMessagingTemplate, String sessionId) {
-        // Vous pouvez utiliser le sessionId pour cibler spécifiquement cet utilisateur
-        Message message = new Message();
-        message .setContent(sessionId);
+    @ResponseBody
+    public static void sendMessageToUser(SimpMessagingTemplate simpMessagingTemplate, String sessionId, Object payload) {
 
         // Envoi du message à l'utilisateur via le canal privé
-        simpMessagingTemplate.convertAndSend("/dilemma-game/clients/private/direct-user" + sessionId, message);
+        simpMessagingTemplate.convertAndSend("/dilemma-game/clients/private/direct-user" + sessionId, payload);
     }
 }
-
