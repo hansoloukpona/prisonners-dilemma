@@ -7,11 +7,8 @@ import java.security.SecureRandom;
 
 
 public class TitForTatRandom implements Strategy {
-	
-	
 
 	private SecureRandom random = new SecureRandom();
-
 
     @Override
     public Decision nextMove(Decision lastOpponentMove) {

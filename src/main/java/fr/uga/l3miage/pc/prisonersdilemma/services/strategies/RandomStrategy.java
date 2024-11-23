@@ -7,13 +7,8 @@ import java.security.SecureRandom;
 
 
 public class RandomStrategy implements Strategy {
-	
-	
 
 	private SecureRandom random = new SecureRandom();
-
-
-    //private Random random = new Random();
 
     @Override
     public Decision nextMove(Decision precMove) {

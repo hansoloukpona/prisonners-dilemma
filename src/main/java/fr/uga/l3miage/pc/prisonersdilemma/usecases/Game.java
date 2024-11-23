@@ -1,6 +1,7 @@
 package fr.uga.l3miage.pc.prisonersdilemma.usecases;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.uga.l3miage.pc.prisonersdilemma.entities.Player;
 import fr.uga.l3miage.pc.prisonersdilemma.services.GameService;
 import fr.uga.l3miage.pc.prisonersdilemma.services.Round;
@@ -12,6 +13,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
 
 import java.util.UUID;
@@ -26,7 +28,10 @@ public class Game {
     private static final Logger logger = LoggerFactory.getLogger(Game.class);
 
     private int totalRounds;
+
+    @JsonIgnore
     private GameService gameService;
+
     private int playedRound = 0;
     private boolean availableToJoin = true;
     private UUID gameId;
@@ -34,18 +39,13 @@ public class Game {
     private Player thePlayer1;
     private Player thePlayer2;
 
-    //private String sessionsIdInitiation;
-    //private SimpMessagingTemplate simpMessagingTemplate;
+    @JsonIgnore
+    private SimpMessagingTemplate simpMessagingTemplate;
 
-    /*public Game(String sessionsIdInitiation) {
-        this.sessionsIdInitiation = sessionsIdInitiation;
-    }*/
-
-    public Game(int rounds, Player player1/*, SimpMessagingTemplate simpMessagingTemplate*/) {
+    public Game(int rounds, Player player1) {
         this.gameId = UUID.randomUUID();
         this.totalRounds = rounds;
         this.thePlayer1 = player1;
-        //this.simpMessagingTemplate = simpMessagingTemplate;
     }
     public ApiResponse<Game> joinGame(Player player2) {
         if (!this.availableToJoin) {
@@ -54,12 +54,15 @@ public class Game {
         this.thePlayer2 = player2;
         this.gameService = new GameService();
         this.availableToJoin = false;
+        logger.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        start(); // TODO Décaler le lancement
+        logger.info("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
         return new ApiResponse<>(200, "OK", joinGame, this);
     }
 
     @Async
     protected void start() {
-        boolean finished = false;
+        //boolean finished = false;
 
         /*if (!this.gameService.playerIsPresentInTheGame(thePlayer2)) {
             // On verifie bien que le joueur 2 est connecté
@@ -81,47 +84,29 @@ public class Game {
                 //TODO Envoyer aux 2 tout simplement et on passe au tour suivant
                 /*activeRound.waitForRoundResultConsultation();*/
 
-                ApiResponse<Game> response = new ApiResponse<>(200, "Roud " + this.playedRound + 1 + " end successfuly", playGame, this);
-
-                //thePlayer1.sendToPlayer(this.simpMessagingTemplate, response);
-                //thePlayer2.sendToPlayer(this.simpMessagingTemplate, response);
-
+                thePlayer1.sendToPlayer(this.simpMessagingTemplate, new ApiResponse<>(200, "Roud " + this.playedRound + 1 + " end successfuly", displayResults, this));
+                thePlayer2.sendToPlayer(this.simpMessagingTemplate, new ApiResponse<>(200, "Roud " + this.playedRound + 1 + " end successfuly", displayResults, this));
+                //this.resetPlayersDecisionForNextRound();
             } catch (InterruptedException e) {
                 //TODO : gérer ceci en faisant un continue (saut) après avoir aretiré +1 a playedRound ou arreter la partie
-                //e.printStackTrace();
-                //logger.error(e.getMessage());
+                logger.error(e.getMessage());
                 logger.error("Crash of synchronisation process, Bye Bye");
-                finished = true;
                 break;
             }
 
-            String messageForTheRound = "Round " + (playedRound) + ":\n" +
+            /*String messageForTheRound = "Round " + (playedRound) + ":\n" +
                     thePlayer1.getName() + " chose " + thePlayer1.getActualRoundDecision() + " and scored " + score.getPlayer1Reward() + " points.\n" +
                     thePlayer2.getName() + " chose " + thePlayer2.getActualRoundDecision() + " and scored " + score.getPlayer2Reward() + " points.\n";
 
-            activeRound.setResulDataCompilation(messageForTheRound);
-
-            //attendre que chacun aie lu le résultat : on fait un endpoint qu'on consulte toute les 3 secondes et qui donne les information par rapport au tour en cours comme round
-        }
-        if (!finished) {
-            try {
-                activeRound.initTheGameResultConsultation();
-                activeRound.waitForTheGameResultConsultation();
-            } catch (InterruptedException e) {
-                //TODO
-                //e.printStackTrace();
-                //logger.error(e.getMessage());
-                logger.error("Crash of result synchronisation process, Bye Bye");
-                finished = true;
-                //TODO sendMessage
-            }
-            if (!finished) {
-                this.resetPlayersDecisionForNextRound();
-                cleanMySelfOfTheGlobalMap();
-                //désallouer les ressources ?
-            }
+            activeRound.setResulDataCompilation(messageForTheRound);*/
 
         }
+
+        thePlayer1.sendToPlayer(this.simpMessagingTemplate, new ApiResponse<>(200, "Roud " + this.playedRound + 1 + " end successfuly", getResults, this));
+        thePlayer2.sendToPlayer(this.simpMessagingTemplate, new ApiResponse<>(200, "Roud " + this.playedRound + 1 + " end successfuly", getResults, this));
+
+        cleanMySelfOfTheGlobalMap();
+        //désallouer les ressources ?
 
     }
 
@@ -140,9 +125,9 @@ public class Game {
             try {
                 activeRound.countAPlayerChoice();
             } catch (InterruptedException e) {
-                //TODO : gérer ceci en faisant un continue (saut) après avoir aretiré +1 a playedRound ou arreter la partie
+                //TODO : gérer ceci en faisant un continue (saut) après avoir retiré +1 a playedRound ou arreter la partie
                 //e.printStackTrace();
-                //logger.error(e.getMessage());
+                logger.error(e.getMessage());
                 logger.error("Crash of synchronisation update process, Bye Bye");
                 return new ApiResponse<>(500, "Crash of synchronisation update process", playGame, this);
             }
@@ -164,7 +149,7 @@ public class Game {
         return new ApiResponse<>(200, "OK", playGame, this);
     }
 
-    public ApiResponse<Game> getGameState(UUID playerId) {
+    /*public ApiResponse<Game> getGameState(UUID playerId) {
         try {
             gameService.userExistAndActiveInGame(playerId, thePlayer1, thePlayer2);
             if (!activeRound.isReadyForRoundResultConsultation()) {
@@ -175,7 +160,7 @@ public class Game {
             return new ApiResponse<>(404, e.getMessage(), getGameState, this);
         }
         return new ApiResponse<>(200, activeRound.getResulDataCompilation(), getGameState, this);
-    }
+    }*/
 
     public ApiResponse<Game> giveUpGame(UUID playerId, String strategyName) {
 
@@ -236,7 +221,7 @@ public class Game {
         gameMap.removeElement(this.gameId);
     }
 
-    public ApiResponse<String> displayResults() {
+    /*public ApiResponse<String> displayResults() {
 
         if (!activeRound.isReadyForResultConsultation())
             return new ApiResponse<>(503, "The game final results aren't available yet", displayResults);
@@ -258,15 +243,7 @@ public class Game {
         }
 
         return new ApiResponse<>(200, "OK", displayResults, resultsText);
-    }
-
-    public UUID getGameId() {
-        return gameId;
-    }
-
-    public boolean isAvailableToJoin() {
-        return availableToJoin;
-    }
+    }*/
 
     private Strategy initializeAutoStrategy(String strategyName) {
 
@@ -288,9 +265,75 @@ public class Game {
     };
 
     public void endGame() {
+        //Vérifier que c'est bien le player 1
         logger.info(this.thePlayer1.getName() + " had end the party!, Bye Bye");
-        displayResults();
+        //displayResults();
+        //TODO send game to the 2 players
         cleanMySelfOfTheGlobalMap();
         //désallouer les ressources ?
     }
+/*
+    public int getTotalRounds() {
+        return totalRounds;
+    }
+
+    public void setTotalRounds(int totalRounds) {
+        this.totalRounds = totalRounds;
+    }
+
+    public GameService getGameService() {
+        return gameService;
+    }
+
+    public void setGameService(GameService gameService) {
+        this.gameService = gameService;
+    }
+
+    public int getPlayedRound() {
+        return playedRound;
+    }
+
+    public void setPlayedRound(int playedRound) {
+        this.playedRound = playedRound;
+    }
+
+    public boolean isAvailableToJoin() {
+        return availableToJoin;
+    }
+
+    public void setAvailableToJoin(boolean availableToJoin) {
+        this.availableToJoin = availableToJoin;
+    }
+
+    public UUID getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(UUID gameId) {
+        this.gameId = gameId;
+    }
+
+    public Round getActiveRound() {
+        return activeRound;
+    }
+
+    public void setActiveRound(Round activeRound) {
+        this.activeRound = activeRound;
+    }
+
+    public Player getThePlayer1() {
+        return thePlayer1;
+    }
+
+    public void setThePlayer1(Player thePlayer1) {
+        this.thePlayer1 = thePlayer1;
+    }
+
+    public Player getThePlayer2() {
+        return thePlayer2;
+    }
+
+    public void setThePlayer2(Player thePlayer2) {
+        this.thePlayer2 = thePlayer2;
+    }*/
 }

@@ -3,14 +3,13 @@ package fr.uga.l3miage.pc.prisonersdilemma.utils;
 
 import fr.uga.l3miage.pc.prisonersdilemma.usecases.Game;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class GlobalGameMap {
 
     private static GlobalGameMap instance;
-    private Map<UUID, Game> map;
+    private static Map<UUID, Game> map;
 
     private GlobalGameMap() {
         map = new HashMap<>();
@@ -37,5 +36,12 @@ public class GlobalGameMap {
 
     public Game getElement(UUID key) {
         return map.get(key);
+    }
+
+    public List<UUID> getGamesNotAvailableToJoin() {
+        return map.entrySet().stream()
+                .filter(entry -> entry.getValue().isAvailableToJoin())
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
     }
 }

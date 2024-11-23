@@ -3,6 +3,7 @@ package fr.uga.l3miage.pc.prisonersdilemma.entities;
 import fr.uga.l3miage.pc.prisonersdilemma.configs.WebSocketSubscribeEventListener;
 import fr.uga.l3miage.pc.prisonersdilemma.controllers.GameController;
 import fr.uga.l3miage.pc.prisonersdilemma.services.Strategy;
+import fr.uga.l3miage.pc.prisonersdilemma.utils.ApiResponse;
 import fr.uga.l3miage.pc.prisonersdilemma.utils.Decision;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -49,9 +50,9 @@ public class Player implements PlayingObject {
     }
 
     public void sendToPlayer(SimpMessagingTemplate simpMessagingTemplate, Object message) {
-        /*if (this.isConnected) {
+        if (this.isConnected) {
             WebSocketSubscribeEventListener.sendMessageToUser(simpMessagingTemplate, playerSessionId, message);
-        }*/
+        }
     }
 
     public void giveUp(Strategy strategyAfterPlayerDeparture) {
