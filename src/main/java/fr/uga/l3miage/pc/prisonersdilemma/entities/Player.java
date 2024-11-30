@@ -1,15 +1,12 @@
 package fr.uga.l3miage.pc.prisonersdilemma.entities;
 
 import fr.uga.l3miage.pc.prisonersdilemma.configs.WebSocketSubscribeEventListener;
-import fr.uga.l3miage.pc.prisonersdilemma.controllers.GameController;
-import fr.uga.l3miage.pc.prisonersdilemma.services.Strategy;
-import fr.uga.l3miage.pc.prisonersdilemma.utils.ApiResponse;
-import fr.uga.l3miage.pc.prisonersdilemma.utils.Decision;
+import fr.uga.l3miage.pc.prisonersdilemma.services.strategies.Strategy;
+import fr.uga.l3miage.pc.prisonersdilemma.services.strategies.Decision;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.socket.WebSocketSession;
 
 import java.util.UUID;
 
@@ -44,7 +41,7 @@ public class Player implements PlayingObject {
     @Override
     public Decision play() /*throws Exception*/ {
         if (!this.isConnected && this.strategy != null) {
-            actualRoundDecision = strategy.nextMove(opponentLastDecision);
+            actualRoundDecision = strategy.nextMove();
         }
         return this.actualRoundDecision;
     }

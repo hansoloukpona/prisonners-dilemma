@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.uga.l3miage.pc.prisonersdilemma.entities.Player;
 import fr.uga.l3miage.pc.prisonersdilemma.services.GameService;
 import fr.uga.l3miage.pc.prisonersdilemma.services.Round;
-import fr.uga.l3miage.pc.prisonersdilemma.services.Strategy;
+import fr.uga.l3miage.pc.prisonersdilemma.services.strategies.Strategy;
 import fr.uga.l3miage.pc.prisonersdilemma.services.strategies.*;
 import fr.uga.l3miage.pc.prisonersdilemma.utils.*;
 import lombok.AllArgsConstructor;
@@ -14,9 +14,11 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.annotation.Async;
 
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static fr.uga.l3miage.pc.prisonersdilemma.utils.Type.*;
 
@@ -55,12 +57,12 @@ public class Game {
         this.gameService = new GameService();
         this.availableToJoin = false;
         logger.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-        start(); // TODO Décaler le lancement
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        scheduler.schedule(this::start, 50, TimeUnit.MILLISECONDS); // Décaler de 500ms
         logger.info("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
         return new ApiResponse<>(200, "OK", joinGame, this);
     }
 
-    @Async
     protected void start() {
         //boolean finished = false;
 

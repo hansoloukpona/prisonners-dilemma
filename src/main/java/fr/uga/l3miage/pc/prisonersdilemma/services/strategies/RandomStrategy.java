@@ -1,17 +1,19 @@
 package fr.uga.l3miage.pc.prisonersdilemma.services.strategies;
 
-import fr.uga.l3miage.pc.prisonersdilemma.services.Strategy;
-import fr.uga.l3miage.pc.prisonersdilemma.utils.Decision;
+import lombok.Data;
 
 import java.security.SecureRandom;
 
-
+@Data
 public class RandomStrategy implements Strategy {
 
-	private SecureRandom random = new SecureRandom();
+    private SecureRandom random = new SecureRandom();
+
+    public RandomStrategy() {
+    }
 
     @Override
-    public Decision nextMove(Decision precMove) {
+    public Decision nextMove() {
         return random.nextBoolean() ? Decision.COOPERATE : Decision.BETRAY;
     }
 
