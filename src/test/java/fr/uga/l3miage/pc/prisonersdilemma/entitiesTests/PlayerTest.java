@@ -59,14 +59,21 @@ class PlayerTest {
 
     @Test
     void sendToPlayerSendsMessageIfConnected() {
+        // Arrange
         player.setConnected(true);
         player.setPlayerSessionId("session123");
+        String message = "Test Message";
 
-        player.sendToPlayer(mockSimpMessagingTemplate, "Test Message");
+        // Act
+        player.sendToPlayer(mockSimpMessagingTemplate, message);
 
-        verify(mockSimpMessagingTemplate, times(1))
-                .convertAndSendToUser(eq("session123"), any(), eq("Test Message"));
+        // Assert
+        verify(mockSimpMessagingTemplate).convertAndSend(
+                "/dilemma-game/clients/private/direct-usersession123",
+                message
+        );
     }
+
 
     @Test
     void sendToPlayerDoesNothingIfNotConnected() {

@@ -107,8 +107,6 @@ public class Player implements PlayingObject {
 
     public void setActualRoundDecision(Decision actualRoundDecision) {
         this.actualRoundDecision = actualRoundDecision;
-        //TODO enlever ce log
-        log.info(name + " décide : " + actualRoundDecision.toString());
     }
 
     public Decision getOpponentLastDecision() {
