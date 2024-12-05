@@ -6,6 +6,8 @@ import fr.uga.l3miage.pc.prisonersdilemma.services.strategies.Decision;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.util.UUID;
@@ -14,6 +16,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Data
 public class Player implements PlayingObject {
+    private static final Logger log = LoggerFactory.getLogger(Player.class);
     private String name;
     private int score = 0;
     private boolean isConnected;
@@ -104,6 +107,8 @@ public class Player implements PlayingObject {
 
     public void setActualRoundDecision(Decision actualRoundDecision) {
         this.actualRoundDecision = actualRoundDecision;
+        //TODO enlever ce log
+        log.info(name + " décide : " + actualRoundDecision.toString());
     }
 
     public Decision getOpponentLastDecision() {

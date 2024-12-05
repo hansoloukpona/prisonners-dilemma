@@ -56,10 +56,10 @@ public class Game {
         this.thePlayer2 = player2;
         this.gameService = new GameService();
         this.availableToJoin = false;
-        logger.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        //logger.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         scheduler.schedule(this::start, 50, TimeUnit.MILLISECONDS); // Décaler de 500ms
-        logger.info("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+        //logger.info("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
         return new ApiResponse<>(200, "OK", joinGame, this);
     }
 
@@ -96,11 +96,11 @@ public class Game {
                 break;
             }
 
-            /*String messageForTheRound = "Round " + (playedRound) + ":\n" +
+            String messageForTheRound = "Round " + (playedRound) + ":\n" +
                     thePlayer1.getName() + " chose " + thePlayer1.getActualRoundDecision() + " and scored " + score.getPlayer1Reward() + " points.\n" +
                     thePlayer2.getName() + " chose " + thePlayer2.getActualRoundDecision() + " and scored " + score.getPlayer2Reward() + " points.\n";
 
-            activeRound.setResulDataCompilation(messageForTheRound);*/
+            logger.info(messageForTheRound);
 
         }
 
@@ -113,14 +113,18 @@ public class Game {
     }
 
     public ApiResponse<Game> playGame(UUID playerId, String decision) {
-        try {
-            GameService.decisionIsValid(decision);
-        } catch (Exception e) {
-            return new ApiResponse<>(404, "Specified decision not found", playGame, this);
+        if (!GameService.decisionIsValid(decision)) {
+            decision = Decision.COOPERATE.toString();
+            //TODO : Ajouter dans la doc que si tu met n'importe quoi, tu Coopère
+            //return new ApiResponse<>(404, "Specified decision not found", playGame, this);
         }
 
-        if (!activeRound.isReadyForPlayersChoices())
-            return new ApiResponse<>(503, "Round player choice listen Unavailable", playGame, this);
+        if (!activeRound.isReadyForPlayersChoices()) {
+            //TODO Ajouter la gestion du fait que après avoir joué deux fois on attends de passer au round suivant
+            //TODO En gros on fait un retour au client et on lui dit de rejouer pour ce tour ? ou on stocke et on réserve pour le move suivant ?
+            logger.error("Tout ça va trop vite");
+            //return new ApiResponse<>(500, "Round player choice listen Unavailable", playGame, this);
+        }
 
         if (gameService.verifyPlayer(playerId, thePlayer1)) {
             thePlayer1.setActualRoundDecision(Decision.valueOf(decision));
@@ -256,10 +260,10 @@ public class Game {
                 return new AlwaysCooperate();
             case "RandomStrategy":
                 return new RandomStrategy();
-            case "TitForTat":
+            /*case "TitForTat":
                 return new TitForTat();
             case "TitForTatRandom":
-                return new TitForTatRandom();
+                return new TitForTatRandom();*/
             default:
                 logger.error("Type de Strategie inconnus");
                 return null;

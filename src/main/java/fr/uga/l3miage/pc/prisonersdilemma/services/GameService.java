@@ -24,10 +24,8 @@ public class GameService {
         return true;
     }
 
-    public static void decisionIsValid(String decision) throws Exception {
-        if (!decision.equals("COOPERATE") && !decision.equals("BETRAY")) {
-            throw new Exception("Invalid decision");
-        }
+    public static boolean decisionIsValid(String decision) {
+        return decision.equals("COOPERATE") || decision.equals("BETRAY");
     }
 
     public void userExistAndActiveInGame (UUID playerId, Player thePlayer1, Player thePlayer2) throws Exception {
@@ -36,7 +34,12 @@ public class GameService {
     }
 
     public boolean verifyPlayer(UUID playerId, Player player) {
-        return playerId == player.getPlayerId() && player.getConnected();
+        /*logger.info("playerId fourni : " + playerId);
+        logger.info("playerId existant dans le système : " + player.getPlayerId());
+        logger.info("player est t'il connecté ? : " + player.getConnected());*/
+        //C'est important de convertir en string sinon des incompatibilitées peuvent naître
+        //TODO Tester le equal avec UUID directement
+        return playerId.toString().equals(player.getPlayerId().toString()) && player.getConnected();
     }
 
 }

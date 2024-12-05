@@ -66,6 +66,7 @@ public class GameController {
             Player thePlayer2 = new Player(gameCreationDTO.getPlayerName());
             thePlayer2.setPlayerSessionId(gameCreationDTO.getPlayerSessionId());
             ApiResponse<Game> apiResponse = findTheRightGame(gameCreationDTO.getGameId()).joinGame(thePlayer2);
+            sendToClient("/dilemma-game/clients/private/direct", apiResponse.getData().getThePlayer1().getPlayerSessionId(), apiResponse);
             log.info("connection successfully established " + apiResponse);
             return apiResponse;
         } catch (Exception e) {
