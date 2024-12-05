@@ -28,10 +28,10 @@ public class GameService {
         return decision.equals("COOPERATE") || decision.equals("BETRAY");
     }
 
-    public void userExistAndActiveInGame (UUID playerId, Player thePlayer1, Player thePlayer2) throws Exception {
+    /*public void userExistAndActiveInGame (UUID playerId, Player thePlayer1, Player thePlayer2) throws Exception {
         if (!this.verifyPlayer(playerId, thePlayer1) && !this.verifyPlayer(playerId, thePlayer2))
             throw new Exception("The specified player hasn't been found");
-    }
+    }*/
 
     public boolean verifyPlayer(UUID playerId, Player player) {
         /*logger.info("playerId fourni : " + playerId);
