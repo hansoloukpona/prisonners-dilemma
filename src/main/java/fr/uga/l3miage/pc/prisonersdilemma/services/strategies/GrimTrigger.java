@@ -7,7 +7,7 @@ import java.util.ArrayList;
 @Data
 public class GrimTrigger implements Strategy {
 
-    ArrayList<Decision> opponentMoveHistoric;
+    private final ArrayList<Decision> opponentMoveHistoric;
 
     public GrimTrigger(ArrayList<Decision> opponentMoveHistoric) {
         this.opponentMoveHistoric = opponentMoveHistoric;

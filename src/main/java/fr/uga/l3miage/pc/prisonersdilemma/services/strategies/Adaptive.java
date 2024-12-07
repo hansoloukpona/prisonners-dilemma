@@ -9,28 +9,32 @@ public class Adaptive implements Strategy {
 
     private ArrayList<Decision> adaptiveDecisions;
 
-    private ArrayList<Integer> scoresHistoric;
+    private final ArrayList<Integer> myScoresHistoric;
+
+    private int adaptiveInitIndex = 0;
 
     public Adaptive(ArrayList<Integer> scoresHistoric) {
-        this.scoresHistoric = scoresHistoric;
+        this.myScoresHistoric = scoresHistoric;
         chargeDecisionForAdaptiveInit();
     }
 
     // Stratégie 15: Adaptatif - Choisir la stratégie donnant le meilleur score
     @Override
     public Decision nextMove() {
+
+        if (adaptiveInitIndex < adaptiveDecisions.size()) {
+            adaptiveInitIndex++;
+            return adaptiveDecisions.get(adaptiveInitIndex - 1);
+        }
+
         int cooperateScore = 0;
         int defectScore = 0;
 
         for (int i = 0; i < adaptiveDecisions.size(); i++) {
-
-            if (i < 11) {
-                return adaptiveDecisions.get(i);
-            }
             if (adaptiveDecisions.get(i) == Decision.COOPERATE) {
-                cooperateScore += scoresHistoric.get(i);
+                cooperateScore += myScoresHistoric.get(i);
             } else {
-                defectScore += scoresHistoric.get(i);
+                defectScore += myScoresHistoric.get(i);
             }
         }
         Decision adaptiveDecision = (cooperateScore > defectScore) ? Decision.COOPERATE : Decision.BETRAY;

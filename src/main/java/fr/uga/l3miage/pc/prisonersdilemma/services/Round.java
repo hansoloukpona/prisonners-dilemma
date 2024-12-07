@@ -15,8 +15,9 @@ public class Round {
 
     private boolean readyForPlayersChoices;
 
-    public Round() {
-        this.choiceFollower = new CountDownLatch(2);
+    public Round(int count) {
+        // count ne doit en tout cas pas être supérieur à 2
+        this.choiceFollower = new CountDownLatch(count);
         this.readyForPlayersChoices = true;
     }
 

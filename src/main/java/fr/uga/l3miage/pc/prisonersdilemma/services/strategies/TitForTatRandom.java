@@ -1,20 +1,25 @@
 package fr.uga.l3miage.pc.prisonersdilemma.services.strategies;
 
+import lombok.Setter;
+
 import java.security.SecureRandom;
+import java.util.ArrayList;
 
 
-public class TitForTatRandom implements Strategy {
+public class TitForTatRandom extends TitForTat {
 
-	private SecureRandom random = new SecureRandom();
-
-    private Decision lastOpponentMove;
+	private final SecureRandom random = new SecureRandom();
 
     public TitForTatRandom(Decision lastOpponentMove) {
-        this.lastOpponentMove = lastOpponentMove;
+        super(lastOpponentMove);
+    }
+
+    public TitForTatRandom(ArrayList<Decision> opponentMoveHistoric) {
+        super(opponentMoveHistoric);
     }
 
     @Override
     public Decision nextMove() {
-        return random.nextDouble() < 0.1 ? random.nextBoolean() ? Decision.COOPERATE : Decision.BETRAY : lastOpponentMove;
+        return random.nextDouble() < 0.1 ? random.nextBoolean() ? Decision.COOPERATE : Decision.BETRAY : super.nextMove();
     }
 }

@@ -1,5 +1,6 @@
 package fr.uga.l3miage.pc.prisonersdilemma.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.uga.l3miage.pc.prisonersdilemma.configs.WebSocketSubscribeEventListener;
 import fr.uga.l3miage.pc.prisonersdilemma.services.strategies.Strategy;
 import fr.uga.l3miage.pc.prisonersdilemma.services.strategies.Decision;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -23,9 +25,13 @@ public class Player implements PlayingObject {
     private Strategy strategy;
     private UUID playerId;
     private Decision actualRoundDecision;
-    private Decision opponentLastDecision;
-
     private String playerSessionId;
+
+    @JsonIgnore
+    private ArrayList<Decision> playerDecisionsHistoric = new ArrayList<>(); //Faut-il retirer l'instanciation ?
+
+    @JsonIgnore
+    private ArrayList<Integer> scoresHistoric = new ArrayList<>();
 
     public Player(String name) {
         this.playerId = UUID.randomUUID();
@@ -42,9 +48,11 @@ public class Player implements PlayingObject {
     }
 
     @Override
-    public Decision play() /*throws Exception*/ {
-        if (!this.isConnected && this.strategy != null) {
-            actualRoundDecision = strategy.nextMove();
+    public Decision play() {
+        if (this.strategy == null) {
+            this.actualRoundDecision = Decision.COOPERATE;
+        } else {
+            this.actualRoundDecision = strategy.nextMove();
         }
         return this.actualRoundDecision;
     }
@@ -107,14 +115,6 @@ public class Player implements PlayingObject {
 
     public void setActualRoundDecision(Decision actualRoundDecision) {
         this.actualRoundDecision = actualRoundDecision;
-    }
-
-    public Decision getOpponentLastDecision() {
-        return opponentLastDecision;
-    }
-
-    public void setOpponentLastDecision(Decision opponentLastDecision) {
-        this.opponentLastDecision = opponentLastDecision;
     }
 
     public String getPlayerSessionId() {

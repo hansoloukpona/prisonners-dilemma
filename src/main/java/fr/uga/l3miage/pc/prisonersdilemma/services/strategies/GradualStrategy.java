@@ -1,11 +1,16 @@
 package fr.uga.l3miage.pc.prisonersdilemma.services.strategies;
 
-import lombok.Data;
+import lombok.Setter;
 
-@Data
+import java.util.ArrayList;
+
+
 public class GradualStrategy implements Strategy {
 
+    @Setter
     private Decision lastOpponentMove;
+
+    private final ArrayList<Decision> opponentMoveHistoric;
 
     private int opponentBetrayCount = 0; // Nombre total de trahisons de l'adversaire
     private int punishmentTurnsLeft = 0; // Nombre de trahisons restantes pour la punition
@@ -13,10 +18,18 @@ public class GradualStrategy implements Strategy {
 
     public GradualStrategy(Decision lastOpponentMove) {
         this.lastOpponentMove = lastOpponentMove;
+        this.opponentMoveHistoric = new ArrayList<>();
+    }
+
+    public GradualStrategy(ArrayList<Decision> lastOpponentMoveHistoric) {
+        this.opponentMoveHistoric = lastOpponentMoveHistoric;
     }
 
     @Override
     public Decision nextMove() {
+
+        chargeOpponentLastMoveFromHistoric();
+
         if (lastOpponentMove == Decision.BETRAY) {
             opponentBetrayCount++;
             punishmentTurnsLeft = opponentBetrayCount; // Réinitialise la punition
@@ -34,6 +47,16 @@ public class GradualStrategy implements Strategy {
         }
 
         return Decision.COOPERATE; // Coopérer par défaut en dehors des cas spéciaux
+    }
+
+    private void chargeOpponentLastMoveFromHistoric() {
+        if (!opponentMoveHistoric.isEmpty()) {
+            lastOpponentMove = getLastOpponentMove();
+        } //On charge le dernier mouvement de l'adversaire si on a un accès interne à l'histotique de ses mouvements
+    }
+
+    public Decision getLastOpponentMove() {
+        return getDecision(opponentMoveHistoric, 1);
     }
 }
 

@@ -33,13 +33,13 @@ public class GameService {
             throw new Exception("The specified player hasn't been found");
     }*/
 
-    public boolean verifyPlayer(UUID playerId, Player player) {
+    /*public boolean verifyPlayer(UUID playerId, Player player) {
         /*logger.info("playerId fourni : " + playerId);
         logger.info("playerId existant dans le système : " + player.getPlayerId());
         logger.info("player est t'il connecté ? : " + player.getConnected());*/
         //C'est important de convertir en string sinon des incompatibilitées peuvent naître
         //TODO Tester le equal avec UUID directement
-        return playerId.toString().equals(player.getPlayerId().toString()) && player.getConnected();
-    }
+        /*return playerId.toString().equals(player.getPlayerId().toString()) && player.getConnected();
+    }*/
 
 }

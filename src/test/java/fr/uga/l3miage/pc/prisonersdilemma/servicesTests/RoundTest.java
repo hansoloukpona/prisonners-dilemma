@@ -10,7 +10,7 @@ class RoundTest {
     @Test
     void testInitialization() {
         // Arrange & Act
-        Round round = new Round();
+        Round round = new Round(2);
 
         // Assert
         assertEquals(2, round.getChoiceFollower().getCount(), "ChoiceFollower should be initialized to 2");
@@ -20,7 +20,7 @@ class RoundTest {
     @Test
     void testCountAPlayerChoice() throws InterruptedException {
         // Arrange
-        Round round = new Round();
+        Round round = new Round(2);
 
         // Act
         round.countAPlayerChoice();
@@ -40,7 +40,7 @@ class RoundTest {
     @Test
     void testWaitForChoices() throws InterruptedException {
         // Arrange
-        Round round = new Round();
+        Round round = new Round(2);
 
         // Act
         Thread testThread = new Thread(() -> {
@@ -67,7 +67,7 @@ class RoundTest {
     @Test
     void testInterruptedExceptionHandlingInCountAPlayerChoice() {
         // Arrange
-        Round round = new Round();
+        Round round = new Round(2);
 
         try {
             // Act & Assert
@@ -81,7 +81,7 @@ class RoundTest {
     @Test
     void testInterruptedExceptionHandlingInWaitForChoices() {
         // Arrange
-        Round round = new Round();
+        Round round = new Round(2);
 
         try {
             // Act & Assert

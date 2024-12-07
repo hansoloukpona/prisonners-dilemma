@@ -1,21 +1,34 @@
 package fr.uga.l3miage.pc.prisonersdilemma.services.strategies;
 
-import lombok.Data;
+import lombok.Setter;
 
-@Data
+import java.util.ArrayList;
+
+
 public class ForgivingGrudgerStrategy implements Strategy {
 
+    @Setter
     private Decision lastOpponentMove;
+
+    private final ArrayList<Decision> opponentMoveHistoric;
 
     private boolean betrayed = false; // Indique si l'adversaire a déjà trahi
     private int punishmentStep = 0; // Étape actuelle de la punition
 
     public ForgivingGrudgerStrategy(Decision lastOpponentMove) {
         this.lastOpponentMove = lastOpponentMove;
+        this.opponentMoveHistoric = new ArrayList<>();
+    }
+
+    public ForgivingGrudgerStrategy(ArrayList<Decision> lastOpponentMoveHistoric) {
+        this.opponentMoveHistoric = lastOpponentMoveHistoric;
     }
 
     @Override
     public Decision nextMove() {
+
+        chargeOpponentLastMoveFromHistoric();
+
         if (lastOpponentMove == Decision.BETRAY) {
             betrayed = true;
         }
@@ -36,5 +49,16 @@ public class ForgivingGrudgerStrategy implements Strategy {
 
         return Decision.COOPERATE; // Coopération par défaut
     }
+
+    private void chargeOpponentLastMoveFromHistoric() {
+        if (!opponentMoveHistoric.isEmpty()) {
+            lastOpponentMove = getLastOpponentMove();
+        } //On charge le dernier mouvement de l'adversaire si on a un accès interne à l'histotique de ses mouvements
+    }
+
+    public Decision getLastOpponentMove() {
+        return getDecision(opponentMoveHistoric, 1);
+    }
+
 }
 

@@ -74,7 +74,26 @@ public class Game {
 
             RoundReward score;
             try {
-                activeRound = new Round();
+
+                int countConnected = 2;
+
+                if (!thePlayer1.isConnected()) {
+                    thePlayer1.play();
+                    countConnected--;
+                }
+
+                if (!thePlayer2.isConnected()) {
+                    thePlayer2.play();
+                    countConnected--;
+                }
+
+                if (countConnected == 0) {
+                    //TODO effacer cette vérification
+                    logger.error("Ce dode n'est pas censé pouvoir se délencher");
+                    break;
+                }
+
+                activeRound = new Round(countConnected);
 
                 activeRound.waitForChoices();  // Attend que les deux joueurs aient fait leurs choix
 
@@ -126,7 +145,7 @@ public class Game {
             //return new ApiResponse<>(500, "Round player choice listen Unavailable", playGame, this);
         }
 
-        if (gameService.verifyPlayer(playerId, thePlayer1)) {
+        if ( playerId.toString().equals(thePlayer1.getPlayerId().toString())       /*gameService.verifyPlayer(playerId, thePlayer1)*/) {
             thePlayer1.setActualRoundDecision(Decision.valueOf(decision));
             try {
                 activeRound.countAPlayerChoice();
@@ -138,7 +157,7 @@ public class Game {
                 return new ApiResponse<>(500, "Crash of synchronisation update process", playGame, this);
             }
 
-        } else if (gameService.verifyPlayer(playerId, thePlayer2)) {
+        } else if ( playerId.toString().equals(thePlayer2.getPlayerId().toString())) {
             thePlayer2.setActualRoundDecision(Decision.valueOf(decision));
             try {
                 activeRound.countAPlayerChoice();

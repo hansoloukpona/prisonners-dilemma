@@ -3,20 +3,19 @@ package fr.uga.l3miage.pc.prisonersdilemma.services.strategies;
 import lombok.Data;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
 
 
-@Data
-public class TitForTwoTatsRandom implements Strategy {
+public class TitForTwoTatsRandom extends TitForTwoTats {
 
-    private SecureRandom random = new SecureRandom();
-
-    private Decision lastButOneOpponentMove;
-
-    private Decision lastOpponentMove;
+    private final SecureRandom random = new SecureRandom();
 
     public TitForTwoTatsRandom(Decision lastButOneOpponentMove, Decision lastOpponentMove) {
-        this.lastButOneOpponentMove = lastButOneOpponentMove;
-        this.lastOpponentMove = lastOpponentMove;
+        super(lastButOneOpponentMove, lastOpponentMove);
+    }
+
+    public TitForTwoTatsRandom(ArrayList<Decision> opponentMoveHistoric) {
+        super(opponentMoveHistoric);
     }
 
     // Stratégie 3: Donnant pour deux donnants et aléatoire
@@ -28,7 +27,7 @@ public class TitForTwoTatsRandom implements Strategy {
         if (random.nextDouble() < 0.1) {
             return randomMove();
         }
-        return (lastOpponentMove == lastButOneOpponentMove) ? lastOpponentMove : Decision.COOPERATE;
+        return super.nextMove();
     }
 
 }

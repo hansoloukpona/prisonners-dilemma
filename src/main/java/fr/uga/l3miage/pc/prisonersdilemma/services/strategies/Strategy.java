@@ -7,19 +7,19 @@ public interface Strategy {
 
      Decision nextMove();
 
-     public default Decision getDecision(ArrayList<Decision> opponentMoveHistoric, int index) {
-          return opponentMoveHistoric.get(opponentMoveHistoric.size() - index);
+     public default Decision getDecision(ArrayList<Decision> moveHistoric, int index) {
+          return moveHistoric.get(moveHistoric.size() - index);
      }
 
-     public default Decision getHistoricMove(ArrayList<Decision> moveHistoric, int index) {
+     public default int getScore(ArrayList<Integer> scoreHistoric, int index) {
+          return scoreHistoric.get(scoreHistoric.size() - index);
+     }
+
+     /*public default Decision getHistoricMove(ArrayList<Decision> moveHistoric, int index) {
           return getDecision(moveHistoric, index);
-     }
+     }*/
 
-    public default void updateContext() {
-
-    }
-
-    // Helper method to return a random move
+     // Helper method to return a random move
      public default Decision randomMove() {
           return new Random().nextBoolean() ? Decision.COOPERATE : Decision.BETRAY;
      }

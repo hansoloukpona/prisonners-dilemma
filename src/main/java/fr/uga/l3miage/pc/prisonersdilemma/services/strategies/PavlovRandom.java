@@ -3,22 +3,19 @@ package fr.uga.l3miage.pc.prisonersdilemma.services.strategies;
 import lombok.Data;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
 
-@Data
-public class PavlovRandom implements Strategy {
 
-    private SecureRandom random = new SecureRandom();
+public class PavlovRandom extends Pavlov {
 
-    private int lastScore;
-
-    private Decision myLastMove;
-
-    private Pavlov pavlov;
+    private final SecureRandom random = new SecureRandom();
 
     public PavlovRandom(int lastScore, Decision myLastMove) {
-        this.lastScore = lastScore;
-        this.myLastMove = myLastMove;
-        this.pavlov = new Pavlov(lastScore, myLastMove);
+        super(lastScore, myLastMove);
+    }
+
+    public PavlovRandom(ArrayList<Integer> scoresHistoric, ArrayList<Decision> myMoveHistoric) {
+        super(scoresHistoric, myMoveHistoric);
     }
 
     // Stratégie 14: Pavlov / Aléatoire
@@ -27,8 +24,6 @@ public class PavlovRandom implements Strategy {
         if (random.nextDouble() < 0.1) {
             return randomMove();
         }
-        pavlov.setLastScore(lastScore);
-        pavlov.setMyLastMove(myLastMove);
-        return pavlov.nextMove();
+        return super.nextMove();
     }
 }
