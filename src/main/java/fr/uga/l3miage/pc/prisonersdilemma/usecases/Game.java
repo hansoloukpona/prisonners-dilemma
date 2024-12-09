@@ -357,10 +357,18 @@ public class Game {
     public void endGame() {
         //Vérifier que c'est bien le player 1
         logger.info(this.thePlayer1.getName() + " had end the party!, Bye Bye");
+
+        this.gameService = null;
+        this.thePlayer1 = null;
+        this.thePlayer2 = null;
+        this.activeRound = null;
+        this.simpMessagingTemplate = null;
+
         //displayResults();
         //TODO faire disparaître cette classe et stopper la fonction play()
         cleanMySelfOfTheGlobalMap();
         //désallouer les ressources ?
+
     }
 
 }
