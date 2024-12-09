@@ -99,14 +99,20 @@ public class Game {
 
                 score = ScoringSystem.calculateScore(thePlayer1.getActualRoundDecision(), thePlayer2.getActualRoundDecision());
 
-                thePlayer1.updateScore(score.getPlayer1Reward());
-                thePlayer2.updateScore(score.getPlayer2Reward());
+                thePlayer1.updateDatas(score.getPlayer1Reward());
+                thePlayer2.updateDatas(score.getPlayer2Reward());
 
                 //TODO Envoyer aux 2 tout simplement et on passe au tour suivant
                 /*activeRound.waitForRoundResultConsultation();*/
 
-                thePlayer1.sendToPlayer(this.simpMessagingTemplate, new ApiResponse<>(200, "Roud " + this.playedRound + 1 + " end successfuly", displayResults, this));
-                thePlayer2.sendToPlayer(this.simpMessagingTemplate, new ApiResponse<>(200, "Roud " + this.playedRound + 1 + " end successfuly", displayResults, this));
+                if (thePlayer1.isConnected()) {
+                    thePlayer1.sendToPlayer(this.simpMessagingTemplate, new ApiResponse<>(200, "Roud " + (this.playedRound + 1) + " end successfuly", displayResults, this));
+                }
+
+                if (thePlayer2.isConnected()) {
+                    thePlayer2.sendToPlayer(this.simpMessagingTemplate, new ApiResponse<>(200, "Roud " + (this.playedRound + 1) + " end successfuly", displayResults, this));
+                }
+
                 //this.resetPlayersDecisionForNextRound();
             } catch (InterruptedException e) {
                 //TODO : gérer ceci en faisant un continue (saut) après avoir aretiré +1 a playedRound ou arreter la partie
@@ -123,8 +129,13 @@ public class Game {
 
         }
 
-        thePlayer1.sendToPlayer(this.simpMessagingTemplate, new ApiResponse<>(200, "Roud " + this.playedRound + 1 + " end successfuly", getResults, this));
-        thePlayer2.sendToPlayer(this.simpMessagingTemplate, new ApiResponse<>(200, "Roud " + this.playedRound + 1 + " end successfuly", getResults, this));
+        if (thePlayer1.isConnected()) {
+            thePlayer1.sendToPlayer(this.simpMessagingTemplate, new ApiResponse<>(200, "Roud " + (this.playedRound + 1) + " end successfuly", getResults, this));
+        }
+
+        if (thePlayer2.isConnected()) {
+            thePlayer2.sendToPlayer(this.simpMessagingTemplate, new ApiResponse<>(200, "Roud " + (this.playedRound + 1) + " end successfuly", getResults, this));
+        }
 
         cleanMySelfOfTheGlobalMap();
         //désallouer les ressources ?
@@ -132,11 +143,11 @@ public class Game {
     }
 
     public ApiResponse<Game> playGame(UUID playerId, String decision) {
-        if (!GameService.decisionIsValid(decision)) {
+        /*if (!GameService.decisionIsValid(decision)) {
             decision = Decision.COOPERATE.toString();
             //TODO : Ajouter dans la doc que si tu met n'importe quoi, tu Coopère
             //return new ApiResponse<>(404, "Specified decision not found", playGame, this);
-        }
+        }*/
 
         if (!activeRound.isReadyForPlayersChoices()) {
             //TODO Ajouter la gestion du fait que après avoir joué deux fois on attends de passer au round suivant
@@ -149,6 +160,7 @@ public class Game {
             thePlayer1.setActualRoundDecision(Decision.valueOf(decision));
             try {
                 activeRound.countAPlayerChoice();
+                logger.info("le player 1 vient de jouer là");
             } catch (InterruptedException e) {
                 //TODO : gérer ceci en faisant un continue (saut) après avoir retiré +1 a playedRound ou arreter la partie
                 //e.printStackTrace();
@@ -161,6 +173,7 @@ public class Game {
             thePlayer2.setActualRoundDecision(Decision.valueOf(decision));
             try {
                 activeRound.countAPlayerChoice();
+                logger.info("le player 2 vient de jouer là");
             } catch (InterruptedException e) {
                 //TODO : gérer ceci en faisant un continue (saut) après avoir retiré +1 a playedRound ou arreter la partie
                 //e.printStackTrace();
@@ -190,12 +203,38 @@ public class Game {
     public ApiResponse<Game> giveUpGame(UUID playerId, String strategyName) {
 
         //TODO trouver le joueur, et remplacer ses tours de passage par une strategie
-        if(playerId == thePlayer2.getPlayerId()) {
+        if(playerId.toString().equals(thePlayer2.getPlayerId().toString())) {
 
-            thePlayer2.setStrategy(initializeAutoStrategy(strategyName));
+            if (!thePlayer1.isConnected()) {
+                endGame();
+            }
+
+            thePlayer2.setStrategy(initializeAutoStrategy(strategyName, thePlayer2, thePlayer1));
+            thePlayer2.setConnected(false);
+            thePlayer2.play();
+            logger.info("On joue 2 de manière autoooooooooooooooooooooooooooooooooooooooooooooooooooo ");
+            try {
+                activeRound.countAPlayerChoice();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
             //ApiResponse<Game> giveUpGame1 = standardVerificationAfterGivUp(playerId, strategyName);
-        } else {
-            thePlayer1.setStrategy(initializeAutoStrategy(strategyName));
+        } else if (playerId.toString().equals(thePlayer1.getPlayerId().toString())) {
+
+            if (!thePlayer2.isConnected()) {
+                endGame();
+            }
+
+            thePlayer1.setStrategy(initializeAutoStrategy(strategyName, thePlayer1, thePlayer2));
+            thePlayer1.setConnected(false);
+            thePlayer1.play();
+            logger.info("On joue 1 de manière autoooooooooooooooooooooooooooooooooooooooooooooooooooo ");
+            try {
+                activeRound.countAPlayerChoice();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         //TODO vérifier si le joueur a déjà joué pour ce tout avant d'abandonner et agir en
@@ -204,7 +243,7 @@ public class Game {
         //TODO juste après avoir reçu la décision d'un joueur pour le tout actuel on véifie
         // que l'autre joeur est connecté ou a déjà donné sa décision, sinon on va déclencher le mouvement suivant la
         // strategie qu'il a choisi en partant
-        return new ApiResponse<>(200, "OK", giveUpGame, this);
+        return new ApiResponse<>(200, "OK", giveUpGame);
     }
 
     /*private ApiResponse<Game> standardVerificationAfterGivUp(UUID playerId, String strategyName) {
@@ -270,7 +309,7 @@ public class Game {
         return new ApiResponse<>(200, "OK", displayResults, resultsText);
     }*/
 
-    private Strategy initializeAutoStrategy(String strategyName) {
+    private Strategy initializeAutoStrategy(String strategyName, Player me, Player myOpponent) {
 
         switch (strategyName) {
             case "AlwaysBetray":
@@ -279,10 +318,36 @@ public class Game {
                 return new AlwaysCooperate();
             case "RandomStrategy":
                 return new RandomStrategy();
-            /*case "TitForTat":
-                return new TitForTat();
+            case "TitForTat":
+                return new TitForTat(myOpponent.getPlayerDecisionsHistoric());
             case "TitForTatRandom":
-                return new TitForTatRandom();*/
+                return new TitForTatRandom(myOpponent.getPlayerDecisionsHistoric());
+            case "TitForTatTats":
+                return new TitForTwoTats(myOpponent.getPlayerDecisionsHistoric());
+            case "TitForTatTatsRandom":
+                return new TitForTwoTatsRandom(myOpponent.getPlayerDecisionsHistoric());
+            case "SuspiciousTitForTatStrategy":
+                return new SuspiciousTitForTatStrategy(myOpponent.getPlayerDecisionsHistoric());
+            case "TruePeacemaker":
+                return new TruePeacemaker(myOpponent.getPlayerDecisionsHistoric());
+            case "RemorsefulProber":
+                return new RemorsefulProber(me.getPlayerDecisionsHistoric(), myOpponent.getPlayerDecisionsHistoric());
+            case "PavlovRandom":
+                return new PavlovRandom(me.getScoresHistoric(), me.getPlayerDecisionsHistoric());
+            case "Pavlov":
+                return new Pavlov(me.getScoresHistoric(), me.getPlayerDecisionsHistoric());
+            case "NaiveProber":
+                return new NaiveProber(myOpponent.getPlayerDecisionsHistoric());
+            case "NaivePeacemaker":
+                return new NaivePeacemaker(myOpponent.getPlayerDecisionsHistoric());
+            case "GimTrigger":
+                return new GrimTrigger(myOpponent.getPlayerDecisionsHistoric());
+            case "GradualStrategy":
+                return new GradualStrategy(myOpponent.getPlayerDecisionsHistoric());
+            case "ForgivingGrudgerStrategy":
+                return new ForgivingGrudgerStrategy(myOpponent.getPlayerDecisionsHistoric());
+            case "Adaptive":
+                return new Adaptive(me.getScoresHistoric());
             default:
                 logger.error("Type de Strategie inconnus");
                 return null;
@@ -293,72 +358,9 @@ public class Game {
         //Vérifier que c'est bien le player 1
         logger.info(this.thePlayer1.getName() + " had end the party!, Bye Bye");
         //displayResults();
-        //TODO send game to the 2 players
+        //TODO faire disparaître cette classe et stopper la fonction play()
         cleanMySelfOfTheGlobalMap();
         //désallouer les ressources ?
     }
-/*
-    public int getTotalRounds() {
-        return totalRounds;
-    }
 
-    public void setTotalRounds(int totalRounds) {
-        this.totalRounds = totalRounds;
-    }
-
-    public GameService getGameService() {
-        return gameService;
-    }
-
-    public void setGameService(GameService gameService) {
-        this.gameService = gameService;
-    }
-
-    public int getPlayedRound() {
-        return playedRound;
-    }
-
-    public void setPlayedRound(int playedRound) {
-        this.playedRound = playedRound;
-    }
-
-    public boolean isAvailableToJoin() {
-        return availableToJoin;
-    }
-
-    public void setAvailableToJoin(boolean availableToJoin) {
-        this.availableToJoin = availableToJoin;
-    }
-
-    public UUID getGameId() {
-        return gameId;
-    }
-
-    public void setGameId(UUID gameId) {
-        this.gameId = gameId;
-    }
-
-    public Round getActiveRound() {
-        return activeRound;
-    }
-
-    public void setActiveRound(Round activeRound) {
-        this.activeRound = activeRound;
-    }
-
-    public Player getThePlayer1() {
-        return thePlayer1;
-    }
-
-    public void setThePlayer1(Player thePlayer1) {
-        this.thePlayer1 = thePlayer1;
-    }
-
-    public Player getThePlayer2() {
-        return thePlayer2;
-    }
-
-    public void setThePlayer2(Player thePlayer2) {
-        this.thePlayer2 = thePlayer2;
-    }*/
 }

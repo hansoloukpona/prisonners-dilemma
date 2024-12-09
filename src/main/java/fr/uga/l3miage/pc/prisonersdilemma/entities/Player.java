@@ -22,7 +22,10 @@ public class Player implements PlayingObject {
     private String name;
     private int score = 0;
     private boolean isConnected;
+
+    @JsonIgnore
     private Strategy strategy;
+
     private UUID playerId;
     private Decision actualRoundDecision;
     private String playerSessionId;
@@ -68,7 +71,9 @@ public class Player implements PlayingObject {
         this.isConnected = false;
     }
 
-    public void updateScore(int points) {
+    public void updateDatas(int points) {
+        this.playerDecisionsHistoric.add(this.actualRoundDecision);
+        this.scoresHistoric.add(points);
         this.score+= points ;
     }
 

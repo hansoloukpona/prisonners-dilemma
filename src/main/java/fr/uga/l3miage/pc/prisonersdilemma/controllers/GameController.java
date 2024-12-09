@@ -67,7 +67,7 @@ public class GameController {
             thePlayer2.setPlayerSessionId(gameCreationDTO.getPlayerSessionId());
             ApiResponse<Game> apiResponse = findTheRightGame(gameCreationDTO.getGameId()).joinGame(thePlayer2);
             sendToClient("/dilemma-game/clients/private/direct", apiResponse.getData().getThePlayer1().getPlayerSessionId(), apiResponse);
-            log.info("connection successfully established " + apiResponse);
+            //log.info("connection successfully established " + apiResponse);
             return apiResponse;
         } catch (Exception e) {
             // En cas d'erreur, retourner un statut 500 (Internal Server Error)
@@ -142,28 +142,25 @@ public class GameController {
             ApiResponse<String> response = new ApiResponse<>(500, "Internal Server Error", getResults);
             return response;
         }
-    }
+    }*/
 
     // Endpoint pour envoyer la décision des joueurs
     
-    //@PostMapping("/{gameId}/giveup")
-    public static ApiResponse<Game> giveUpGame( UUID gameId,  UUID playerId, String strategyToApply, WebSocketSession playerSession) {
+    @MessageMapping("/giveUp")
+    @SendToUser("/dilemma-game/clients/private/direct")
+    public ApiResponse<Game> giveUpGame(@Payload GameCreationDTO gameCreationDTO) {
         try {
-            ApiResponse<Game> response = findTheRightGame(gameId).giveUpGame(playerId, strategyToApply);
-            GameController.sendToClient(playerSession, response);
-            return response;
+            System.out.println(gameCreationDTO.getGameId().toString());
+            System.out.println(gameCreationDTO.getPlayerId().toString());
+            System.out.println(gameCreationDTO.getPlayerSessionId().toString());
+            return findTheRightGame(gameCreationDTO.getGameId()).giveUpGame(gameCreationDTO.getPlayerId(), gameCreationDTO.getPlayerDecision());
         } catch (Exception e) {
             // En cas d'erreur, retourner un statut 500 (Internal Server Error)
-            ApiResponse<Game> response = new ApiResponse<>(500, "Internal Server Error", giveUpGame);
-            GameController.sendToClient(playerSession, response);
-            return response;
+            //TODO
+            log.error("Give Up fail :" + e.getMessage());
+            return new ApiResponse<>(500, "Internal Server Error", giveUpGame);
         }
         //Retire le game de la liste à la fin
-    }*/
-    
-    //@PostMapping("/{gameId}/endgame")
-    public ApiResponse<Void> endGame( UUID gameId,  UUID playerId) {
-        return null;
     }
 
     public void sendToClient(String destination, String playerSessionId, Object message) {

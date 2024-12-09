@@ -23,8 +23,8 @@ public class Pavlov implements Strategy {
         this.myMoveHistoric = new ArrayList<>();
     }
 
-    public Pavlov(ArrayList<Integer> scoresHistoric, ArrayList<Decision> myMoveHistoric) {
-        this.myScoresHistoric = scoresHistoric;
+    public Pavlov(ArrayList<Integer> myScoresHistoric, ArrayList<Decision> myMoveHistoric) {
+        this.myScoresHistoric = myScoresHistoric;
         this.myMoveHistoric = myMoveHistoric;
     }
 
