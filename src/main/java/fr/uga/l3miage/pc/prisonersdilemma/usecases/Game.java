@@ -129,11 +129,11 @@ public class Game {
                 break;
             }
 
-            String messageForTheRound = "Round " + (playedRound) + ":\n" +
+            /*String messageForTheRound = "Round " + (playedRound) + ":\n" +
                     thePlayer1.getName() + " chose " + thePlayer1.getActualRoundDecision() + " and scored " + score.getPlayer1Reward() + " points.\n" +
                     thePlayer2.getName() + " chose " + thePlayer2.getActualRoundDecision() + " and scored " + score.getPlayer2Reward() + " points.\n";
 
-            logger.info(messageForTheRound);
+            logger.info(messageForTheRound);*/
 
         }
 
@@ -220,7 +220,7 @@ public class Game {
             thePlayer2.setStrategy(initializeAutoStrategy(strategyName, thePlayer2, thePlayer1));
             thePlayer2.setConnected(false);
             thePlayer2.play();
-            logger.info("On joue 2 de manière autoooooooooooooooooooooooooooooooooooooooooooooooooooo ");
+            //logger.info("On joue 2 de manière autoooooooooooooooooooooooooooooooooooooooooooooooooooo ");
             try {
                 activeRound.countAPlayerChoice();
             } catch (InterruptedException e) {
@@ -237,7 +237,7 @@ public class Game {
             thePlayer1.setStrategy(initializeAutoStrategy(strategyName, thePlayer1, thePlayer2));
             thePlayer1.setConnected(false);
             thePlayer1.play();
-            logger.info("On joue 1 de manière autoooooooooooooooooooooooooooooooooooooooooooooooooooo ");
+            //logger.info("On joue 1 de manière autoooooooooooooooooooooooooooooooooooooooooooooooooooo ");
             try {
                 activeRound.countAPlayerChoice();
             } catch (InterruptedException e) {
@@ -266,7 +266,7 @@ public class Game {
             adapter = new FromGroup1_7ToGroup2_6StrategiesUsage(initializeAutoGroup1_7Strategy(strategyName),thePlayer2, thePlayer1, totalRounds);
             thePlayer2.setConnected(false);
             thePlayer2.play();
-            logger.info("On joue 2 de manière autoooooooooooooooooooooooooooooooooooooooooooooooooooo ");
+            //logger.info("On joue 2 de manière autoooooooooooooooooooooooooooooooooooooooooooooooooooo ");
             try {
                 activeRound.countAPlayerChoice();
             } catch (InterruptedException e) {
@@ -282,7 +282,7 @@ public class Game {
             adapter = new FromGroup1_7ToGroup2_6StrategiesUsage(initializeAutoGroup1_7Strategy(strategyName),thePlayer2, thePlayer1, totalRounds);
             thePlayer1.setConnected(false);
             thePlayer1.play();
-            logger.info("On joue 1 de manière autoooooooooooooooooooooooooooooooooooooooooooooooooooo ");
+            //logger.info("On joue 1 de manière autoooooooooooooooooooooooooooooooooooooooooooooooooooo ");
             try {
                 activeRound.countAPlayerChoice();
             } catch (InterruptedException e) {

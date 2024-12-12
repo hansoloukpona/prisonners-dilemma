@@ -150,9 +150,6 @@ public class GameController {
     @SendToUser("/dilemma-game/clients/private/direct")
     public ApiResponse<Game> giveUpGame(@Payload GameCreationDTO gameCreationDTO) {
         try {
-            System.out.println(gameCreationDTO.getGameId().toString());
-            System.out.println(gameCreationDTO.getPlayerId().toString());
-            System.out.println(gameCreationDTO.getPlayerSessionId().toString());
             return findTheRightGame(gameCreationDTO.getGameId()).giveUpGame(gameCreationDTO.getPlayerId(), gameCreationDTO.getPlayerDecision());
         } catch (Exception e) {
             // En cas d'erreur, retourner un statut 500 (Internal Server Error)
