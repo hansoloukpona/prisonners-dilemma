@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: fr.uga.l3miage.pc.prisonersdilemma.PrisonersDilemmaApplicati
+ on
+
