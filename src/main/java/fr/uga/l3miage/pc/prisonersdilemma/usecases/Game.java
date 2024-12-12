@@ -2,12 +2,15 @@ package fr.uga.l3miage.pc.prisonersdilemma.usecases;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import fr.uga.l3miage.pc.prisonersdilemma.adaptation.FromGroup1_7ToGroup2_6StrategiesUsage;
 import fr.uga.l3miage.pc.prisonersdilemma.entities.Player;
 import fr.uga.l3miage.pc.prisonersdilemma.services.GameService;
 import fr.uga.l3miage.pc.prisonersdilemma.services.Round;
+import fr.uga.l3miage.pc.prisonersdilemma.services.strategies.Pavlov;
 import fr.uga.l3miage.pc.prisonersdilemma.services.strategies.Strategy;
 import fr.uga.l3miage.pc.prisonersdilemma.services.strategies.*;
 import fr.uga.l3miage.pc.prisonersdilemma.utils.*;
+import fr.uga.l3miage.pc.strategies.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +47,9 @@ public class Game {
     @JsonIgnore
     private SimpMessagingTemplate simpMessagingTemplate;
 
+    @JsonIgnore
+    private static FromGroup1_7ToGroup2_6StrategiesUsage adapter;
+
     public Game(int rounds, Player player1) {
         this.gameId = UUID.randomUUID();
         this.totalRounds = rounds;
@@ -79,11 +85,13 @@ public class Game {
 
                 if (!thePlayer1.isConnected()) {
                     thePlayer1.play();
+                    //thePlayer1.setActualRoundDecision(adapter.play(thePlayer1, thePlayer2, playedRound, thePlayer1.getPlayerId().toString())); //Group1_7 adaptation
                     countConnected--;
                 }
 
                 if (!thePlayer2.isConnected()) {
                     thePlayer2.play();
+                    //thePlayer2.setActualRoundDecision(adapter.play(thePlayer1, thePlayer2, playedRound, thePlayer2.getPlayerId().toString()));
                     countConnected--;
                 }
 
@@ -115,7 +123,7 @@ public class Game {
 
                 //this.resetPlayersDecisionForNextRound();
             } catch (InterruptedException e) {
-                //TODO : gérer ceci en faisant un continue (saut) après avoir aretiré +1 a playedRound ou arreter la partie
+                //TODO : gérer ceci en faisant un continue (saut) après avoir a retiré +1 a playedRound ou arreter la partie
                 logger.error(e.getMessage());
                 logger.error("Crash of synchronisation process, Bye Bye");
                 break;
@@ -246,6 +254,51 @@ public class Game {
         return new ApiResponse<>(200, "OK", giveUpGame);
     }
 
+    public ApiResponse<Game> giveUpGameAdaptedToGroup1_7Strategies(UUID playerId, String strategyName) {
+
+        //TODO trouver le joueur, et remplacer ses tours de passage par une strategie
+        if(playerId.toString().equals(thePlayer2.getPlayerId().toString())) {
+
+            if (!thePlayer1.isConnected()) {
+                endGame();
+            }
+
+            adapter = new FromGroup1_7ToGroup2_6StrategiesUsage(initializeAutoGroup1_7Strategy(strategyName),thePlayer2, thePlayer1, totalRounds);
+            thePlayer2.setConnected(false);
+            thePlayer2.play();
+            logger.info("On joue 2 de manière autoooooooooooooooooooooooooooooooooooooooooooooooooooo ");
+            try {
+                activeRound.countAPlayerChoice();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+        } else if (playerId.toString().equals(thePlayer1.getPlayerId().toString())) {
+
+            if (!thePlayer2.isConnected()) {
+                endGame();
+            }
+
+            adapter = new FromGroup1_7ToGroup2_6StrategiesUsage(initializeAutoGroup1_7Strategy(strategyName),thePlayer2, thePlayer1, totalRounds);
+            thePlayer1.setConnected(false);
+            thePlayer1.play();
+            logger.info("On joue 1 de manière autoooooooooooooooooooooooooooooooooooooooooooooooooooo ");
+            try {
+                activeRound.countAPlayerChoice();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        //TODO vérifier si le joueur a déjà joué pour ce tout avant d'abandonner et agir en
+        // conséquence selon le cas
+
+        //TODO juste après avoir reçu la décision d'un joueur pour le tout actuel on véifie
+        // que l'autre joeur est connecté ou a déjà donné sa décision, sinon on va déclencher le mouvement suivant la
+        // strategie qu'il a choisi en partant
+        return new ApiResponse<>(200, "OK", giveUpGame);
+    }
+
     /*private ApiResponse<Game> standardVerificationAfterGivUp(UUID playerId, String strategyName) {
         if(playerId == thePlayer2.getPlayerId()) {
 
@@ -353,6 +406,51 @@ public class Game {
                 return null;
         }
     };
+
+    private SimpleStrategy initializeAutoGroup1_7Strategy(String strategyName) {
+
+        switch (strategyName) {
+            case "AlwaysBetray":
+                return new Trahir();
+            case "AlwaysCooperate":
+                return new Cooperer();
+            case "RandomStrategy":
+                return new Aleatoire();
+            case "TitForTat":
+                return new DonnantDonnant();
+            case "TitForTatRandom":
+                return new DonnantDonnantAleatoire();
+            case "TitForTatTats":
+                return new DonnantPour2Donnants();
+            case "TitForTatTatsRandom":
+                return new DonnantPour2DonnantsEtAleatoire();
+            case "SuspiciousTitForTatStrategy":
+                return new DonnantDonnantSoupconneux();
+            case "TruePeacemaker":
+                return new Pacificateur();
+            case "RemorsefulProber":
+                return new SondeurRepentant();
+            case "PavlovRandom":
+                return new PavlovAleatoire();
+            case "Pavlov":
+                return new fr.uga.l3miage.pc.strategies.Pavlov();
+            case "NaiveProber":
+                return new SondeurNaif();
+            case "NaivePeacemaker":
+                return new PacificateurNaif();
+            case "GimTrigger":
+                return new Rancunier();
+            case "GradualStrategy":
+                return new Graduel();
+            case "ForgivingGrudgerStrategy":
+                return new RancunierDoux();
+            case "Adaptive":
+                return new Adaptatif();
+            default:
+                logger.error("Type de Strategie inconnus");
+                return null;
+        }
+    }
 
     public void endGame() {
         //Vérifier que c'est bien le player 1
