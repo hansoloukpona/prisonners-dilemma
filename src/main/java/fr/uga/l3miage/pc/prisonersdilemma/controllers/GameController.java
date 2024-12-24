@@ -66,9 +66,9 @@ public class GameController {
             Player thePlayer2 = new Player(gameCreationDTO.getPlayerName());
             thePlayer2.setPlayerSessionId(gameCreationDTO.getPlayerSessionId());
             ApiResponse<Game> apiResponse = findTheRightGame(gameCreationDTO.getGameId()).joinGame(thePlayer2);
-            sendToClient("/dilemma-game/clients/private/direct", apiResponse.getData().getThePlayer1().getPlayerSessionId(), apiResponse);
+            sendToClient("/dilemma-game/clients/private/direct", apiResponse.getData().getThePlayer1().getPlayerSessionId(), apiResponse); //avertir le joueur 1
             //log.info("connection successfully established " + apiResponse);
-            return apiResponse;
+            return apiResponse; //avertit le joueur 2
         } catch (Exception e) {
             // En cas d'erreur, retourner un statut 500 (Internal Server Error)
             //TODO

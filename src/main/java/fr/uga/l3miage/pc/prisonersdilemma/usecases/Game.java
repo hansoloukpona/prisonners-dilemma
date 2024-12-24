@@ -139,10 +139,12 @@ public class Game {
 
         if (thePlayer1.isConnected()) {
             thePlayer1.sendToPlayer(this.simpMessagingTemplate, new ApiResponse<>(200, "Roud " + (this.playedRound + 1) + " end successfuly", getResults, this));
+            Thread.yield();//permet la synchronisation de la requête
         }
 
         if (thePlayer2.isConnected()) {
             thePlayer2.sendToPlayer(this.simpMessagingTemplate, new ApiResponse<>(200, "Roud " + (this.playedRound + 1) + " end successfuly", getResults, this));
+            Thread.yield();//permet la synchronisation de la requête
         }
 
         cleanMySelfOfTheGlobalMap();
