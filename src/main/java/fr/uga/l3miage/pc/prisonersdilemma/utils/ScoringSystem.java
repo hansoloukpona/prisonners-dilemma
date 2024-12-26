@@ -2,6 +2,8 @@ package fr.uga.l3miage.pc.prisonersdilemma.utils;
 
 import fr.uga.l3miage.pc.prisonersdilemma.services.strategies.Decision;
 
+//Business Logic
+
 public class ScoringSystem {
     private static final int T = 5;  // Trahir gain
     private static final int D = 0;  // Duper perte

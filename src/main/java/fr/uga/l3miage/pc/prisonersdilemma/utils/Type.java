@@ -1,5 +1,7 @@
 package fr.uga.l3miage.pc.prisonersdilemma.utils;
 
+//Business Logic
+
 public class Type {
     public static final String createGame = "createGame";
     public static final String joinGame = "joinGame";

@@ -6,6 +6,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
+//User-Side (optionnel)
+
 //@Component //Ceci est une option, On ne se servira pas de ceci pour ce projet
 public class WebSocketEventListener {
 

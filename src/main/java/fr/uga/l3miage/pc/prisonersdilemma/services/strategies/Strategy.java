@@ -3,6 +3,8 @@ package fr.uga.l3miage.pc.prisonersdilemma.services.strategies;
 import java.util.ArrayList;
 import java.util.Random;
 
+//Business Logic (et tout ce qui en hérite)
+
 public interface Strategy {
 
      Decision nextMove();

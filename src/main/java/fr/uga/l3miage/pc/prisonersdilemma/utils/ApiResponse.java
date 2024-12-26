@@ -3,6 +3,8 @@ package fr.uga.l3miage.pc.prisonersdilemma.utils;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.*;
 
+//User-Side
+
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Data

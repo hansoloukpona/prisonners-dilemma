@@ -1,5 +1,7 @@
 package fr.uga.l3miage.pc.prisonersdilemma.utils;
 
+//Business Logic
+
 public class RoundReward {
     private int player1Reward;
     private int player2Reward;

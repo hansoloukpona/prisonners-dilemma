@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+//Business Logic
+
 @AllArgsConstructor
 @Service
 public class GameService {

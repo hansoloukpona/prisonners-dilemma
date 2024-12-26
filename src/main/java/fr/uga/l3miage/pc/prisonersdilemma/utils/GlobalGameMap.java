@@ -6,6 +6,8 @@ import fr.uga.l3miage.pc.prisonersdilemma.usecases.Game;
 import java.util.*;
 import java.util.stream.Collectors;
 
+//Business Logic
+
 public class GlobalGameMap {
 
     private static GlobalGameMap instance;

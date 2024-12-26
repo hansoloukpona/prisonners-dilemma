@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 
 import static fr.uga.l3miage.pc.prisonersdilemma.utils.Type.*;
 
+//User-Side
+
 @Component
 public class WebSocketSubscribeEventListener implements ApplicationListener<SessionSubscribeEvent> {
 

@@ -25,6 +25,8 @@ import java.util.concurrent.TimeUnit;
 
 import static fr.uga.l3miage.pc.prisonersdilemma.utils.Type.*;
 
+//Business Logic
+
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Data

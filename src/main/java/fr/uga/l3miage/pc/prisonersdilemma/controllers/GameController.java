@@ -24,8 +24,12 @@ import java.util.UUID;
 
 import static fr.uga.l3miage.pc.prisonersdilemma.utils.Type.*;
 
+//User-Side
+
 @Controller
 public class GameController {
+
+    //Au final de la business logic dans du server-side ou du user-side c'est normal
 
     private static final Logger log = LoggerFactory.getLogger(GameController.class);
 
@@ -114,37 +118,6 @@ public class GameController {
         }
 
     }
-    // Endpoint pour envoyer la décision des joueurs
-    /*
-    @SendTo("/notify")
-    public static ApiResponse<Game> getGameState( UUID gameId,  UUID playerId, WebSocketSession playerSession ) {
-        try {
-            ApiResponse<Game> response = findTheRightGame(gameId).getGameState(playerId);
-            GameController.sendToClient(playerSession, response);
-            return response;
-        } catch (Exception e) {
-            // En cas d'erreur, retourner un statut 500 (Internal Server Error)
-            ApiResponse<Game> response = new ApiResponse<>(500, "Internal Server Error", getGameState);
-            GameController.sendToClient(playerSession, response);
-            return response;
-        }
-
-    }
-
-    // Endpoint pour obtenir les résultats de la partie
-    
-    public static ApiResponse<String> getResults( UUID gameId,  UUID playerId) {
-        try {
-            //TODO
-            return findTheRightGame(gameId).displayResults();
-        } catch (Exception e) {
-            // En cas d'erreur, retourner un statut 500 (Internal Server Error)
-            ApiResponse<String> response = new ApiResponse<>(500, "Internal Server Error", getResults);
-            return response;
-        }
-    }*/
-
-    // Endpoint pour envoyer la décision des joueurs
     
     @MessageMapping("/giveUp")
     @SendToUser("/dilemma-game/clients/private/direct")
@@ -160,12 +133,14 @@ public class GameController {
         //Retire le game de la liste à la fin
     }
 
+    //Business Logic
     public void sendToClient(String destination, String playerSessionId, Object message) {
 
         simpMessagingTemplate.convertAndSend(destination + "-user" + playerSessionId, message);
 
     }
 
+    //Business Logic
     private static Game findTheRightGame(UUID gameId) {
         GlobalGameMap gameMap = GlobalGameMap.getInstance();
         return gameMap.getElement(gameId);

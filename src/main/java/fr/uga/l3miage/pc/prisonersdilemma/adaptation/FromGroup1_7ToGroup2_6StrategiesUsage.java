@@ -7,6 +7,8 @@ import fr.uga.l3miage.pc.prisonersdilemma.services.strategies.Decision;
 import fr.uga.l3miage.pc.strategies.SimpleStrategy;
 import lombok.Data;
 
+//Server-Side
+
 @Data
 public class FromGroup1_7ToGroup2_6StrategiesUsage {
 
