@@ -1,6 +1,6 @@
 package fr.uga.l3miage.pc.prisonersdilemma.configs;
 
-import fr.uga.l3miage.pc.prisonersdilemma.entities.SimpleInformationExchange;
+import fr.uga.l3miage.pc.prisonersdilemma.userside.dtos.SimpleInformationExchange;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;

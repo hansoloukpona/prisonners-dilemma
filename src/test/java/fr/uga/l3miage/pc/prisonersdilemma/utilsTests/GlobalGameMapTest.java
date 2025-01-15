@@ -1,8 +1,8 @@
 package fr.uga.l3miage.pc.prisonersdilemma.utilsTests;
 
-import fr.uga.l3miage.pc.prisonersdilemma.entities.Player;
-import fr.uga.l3miage.pc.prisonersdilemma.usecases.Game;
-import fr.uga.l3miage.pc.prisonersdilemma.utils.GlobalGameMap;
+import fr.uga.l3miage.pc.prisonersdilemma.businesslogic.entities.Player;
+import fr.uga.l3miage.pc.prisonersdilemma.businesslogic.usecases.Game;
+import fr.uga.l3miage.pc.prisonersdilemma.businesslogic.usecases.GlobalGameMap;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

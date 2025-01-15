@@ -1,6 +1,6 @@
 package fr.uga.l3miage.pc.prisonersdilemma.servicesTests;
 
-import fr.uga.l3miage.pc.prisonersdilemma.services.Round;
+import fr.uga.l3miage.pc.prisonersdilemma.businesslogic.services.Round;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

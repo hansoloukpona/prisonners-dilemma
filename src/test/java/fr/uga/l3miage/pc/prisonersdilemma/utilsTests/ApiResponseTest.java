@@ -2,7 +2,7 @@ package fr.uga.l3miage.pc.prisonersdilemma.utilsTests;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.uga.l3miage.pc.prisonersdilemma.utils.ApiResponse;
+import fr.uga.l3miage.pc.prisonersdilemma.userside.dtos.ApiResponse;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

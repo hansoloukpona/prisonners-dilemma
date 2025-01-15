@@ -1,7 +1,7 @@
 package fr.uga.l3miage.pc.prisonersdilemma.entitiesTests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.uga.l3miage.pc.prisonersdilemma.entities.GameCreationDTO;
+import fr.uga.l3miage.pc.prisonersdilemma.userside.dtos.GameCreationDTO;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;

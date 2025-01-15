@@ -1,6 +1,6 @@
 package fr.uga.l3miage.pc.prisonersdilemma.entitiesTests;
 
-import fr.uga.l3miage.pc.prisonersdilemma.entities.SimpleInformationExchange;
+import fr.uga.l3miage.pc.prisonersdilemma.userside.dtos.SimpleInformationExchange;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

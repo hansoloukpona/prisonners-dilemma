@@ -1,8 +1,8 @@
 package fr.uga.l3miage.pc.prisonersdilemma.entitiesTests;
 
-import fr.uga.l3miage.pc.prisonersdilemma.entities.Player;
-import fr.uga.l3miage.pc.prisonersdilemma.services.strategies.Strategy;
-import fr.uga.l3miage.pc.prisonersdilemma.services.strategies.Decision;
+import fr.uga.l3miage.pc.prisonersdilemma.businesslogic.entities.Player;
+import fr.uga.l3miage.pc.prisonersdilemma.businesslogic.services.strategies.Strategy;
+import fr.uga.l3miage.pc.prisonersdilemma.businesslogic.services.strategies.Decision;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

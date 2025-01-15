@@ -1,6 +1,6 @@
 package fr.uga.l3miage.pc.prisonersdilemma.utilsTests;
 
-import fr.uga.l3miage.pc.prisonersdilemma.utils.RoundReward;
+import fr.uga.l3miage.pc.prisonersdilemma.businesslogic.utils.RoundReward;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

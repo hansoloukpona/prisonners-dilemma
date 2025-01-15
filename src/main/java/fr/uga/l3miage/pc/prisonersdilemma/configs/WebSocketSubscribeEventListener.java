@@ -1,7 +1,7 @@
 package fr.uga.l3miage.pc.prisonersdilemma.configs;
 
-import fr.uga.l3miage.pc.prisonersdilemma.entities.SimpleInformationExchange;
-import fr.uga.l3miage.pc.prisonersdilemma.utils.ApiResponse;
+import fr.uga.l3miage.pc.prisonersdilemma.userside.dtos.SimpleInformationExchange;
+import fr.uga.l3miage.pc.prisonersdilemma.userside.dtos.ApiResponse;
 import org.springframework.context.ApplicationListener;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -9,7 +9,7 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
-import static fr.uga.l3miage.pc.prisonersdilemma.utils.Type.*;
+import static fr.uga.l3miage.pc.prisonersdilemma.businesslogic.utils.Type.sessionIdInitiation;
 
 //User-Side
 

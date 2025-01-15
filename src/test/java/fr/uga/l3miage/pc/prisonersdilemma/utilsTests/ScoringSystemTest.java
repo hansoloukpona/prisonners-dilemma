@@ -1,9 +1,9 @@
 package fr.uga.l3miage.pc.prisonersdilemma.utilsTests;
 
 
-import fr.uga.l3miage.pc.prisonersdilemma.services.strategies.Decision;
-import fr.uga.l3miage.pc.prisonersdilemma.utils.RoundReward;
-import fr.uga.l3miage.pc.prisonersdilemma.utils.ScoringSystem;
+import fr.uga.l3miage.pc.prisonersdilemma.businesslogic.services.strategies.Decision;
+import fr.uga.l3miage.pc.prisonersdilemma.businesslogic.utils.RoundReward;
+import fr.uga.l3miage.pc.prisonersdilemma.businesslogic.utils.ScoringSystem;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
