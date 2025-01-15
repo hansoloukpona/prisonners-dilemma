@@ -1,6 +1,6 @@
 package fr.uga.l3miage.pc.prisonersdilemma.configs;
 
-import fr.uga.l3miage.pc.prisonersdilemma.userside.dtos.SimpleInformationExchange;
+import fr.uga.l3miage.pc.prisonersdilemma.userside.dtos.SimpleExchangeDTO;
 import fr.uga.l3miage.pc.prisonersdilemma.userside.dtos.ApiResponse;
 import org.springframework.context.ApplicationListener;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -31,7 +31,7 @@ public class WebSocketSubscribeEventListener implements ApplicationListener<Sess
         String destination = headerAccessor.getDestination();
 
         if (destination != null && destination.contains("/private/direct")) {
-            SimpleInformationExchange message = new SimpleInformationExchange();
+            SimpleExchangeDTO message = new SimpleExchangeDTO();
             message.setContent(sessionId);
             sendMessageToUser(simpMessagingTemplate, sessionId, new ApiResponse<>(200, "OK", sessionIdInitiation ,message));
         }

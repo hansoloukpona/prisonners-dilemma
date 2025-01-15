@@ -1,10 +1,12 @@
 package fr.uga.l3miage.pc.prisonersdilemma.userside.controllers;
 
-import fr.uga.l3miage.pc.prisonersdilemma.userside.dtos.GameCreationDTO;
+import fr.uga.l3miage.pc.prisonersdilemma.businesslogic.utils.GameMapper;
+import fr.uga.l3miage.pc.prisonersdilemma.userside.dtos.GameExchangeDTO;
 import fr.uga.l3miage.pc.prisonersdilemma.businesslogic.entities.Player;
 import fr.uga.l3miage.pc.prisonersdilemma.businesslogic.usecases.Game;
 import fr.uga.l3miage.pc.prisonersdilemma.userside.dtos.ApiResponse;
 import fr.uga.l3miage.pc.prisonersdilemma.businesslogic.usecases.GlobalGameMap;
+import fr.uga.l3miage.pc.prisonersdilemma.userside.dtos.GameDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -39,18 +41,18 @@ public class GameController {
 
     @MessageMapping("/createGame")
     @SendToUser("/dilemma-game/clients/private/direct")
-    public ApiResponse<Game> createGame(@Payload GameCreationDTO gameCreationDTO) {
+    public ApiResponse<GameDTO> createGame(@Payload GameExchangeDTO gameExchangeDTO) {
         try {
-            log.info("connection successfully established " + gameCreationDTO.getPlayerName());
+            log.info("connection successfully established " + gameExchangeDTO.getPlayerName());
 
-            Player thePlayer1 = new Player(gameCreationDTO.getPlayerName());
-            thePlayer1.setPlayerSessionId(gameCreationDTO.getPlayerSessionId());
+            Player thePlayer1 = new Player(gameExchangeDTO.getPlayerName());
+            thePlayer1.setPlayerSessionId(gameExchangeDTO.getPlayerSessionId());
 
-            Game game = new Game(gameCreationDTO.getRounds(), thePlayer1);
+            Game game = new Game(gameExchangeDTO.getRounds(), thePlayer1);
             game.setSimpMessagingTemplate(this.simpMessagingTemplate);
             GlobalGameMap gameMap = GlobalGameMap.getInstance();
             gameMap.putElement(game.getGameId(), game);
-            return new ApiResponse<>(200, "OK", createGame ,game);
+            return new ApiResponse<>(200, "OK", createGame , GameMapper.toGameDTO(game));
         } catch (Exception e) {
             // En cas d'erreur, retourner un statut 500 (Internal Server Error)
             //TODO
@@ -62,12 +64,12 @@ public class GameController {
 
     @MessageMapping("/joinGame")
     @SendToUser("/dilemma-game/clients/private/direct")
-    public ApiResponse<Game> joinGame(@Payload GameCreationDTO gameCreationDTO) {
+    public ApiResponse<GameDTO> joinGame(@Payload GameExchangeDTO gameExchangeDTO) {
         try {
-            log.info("Arrival to join " + gameCreationDTO);
-            Player thePlayer2 = new Player(gameCreationDTO.getPlayerName());
-            thePlayer2.setPlayerSessionId(gameCreationDTO.getPlayerSessionId());
-            ApiResponse<Game> apiResponse = findTheRightGame(gameCreationDTO.getGameId()).joinGame(thePlayer2);
+            log.info("Arrival to join " + gameExchangeDTO);
+            Player thePlayer2 = new Player(gameExchangeDTO.getPlayerName());
+            thePlayer2.setPlayerSessionId(gameExchangeDTO.getPlayerSessionId());
+            ApiResponse<GameDTO> apiResponse = findTheRightGame(gameExchangeDTO.getGameId()).joinGame(thePlayer2);
             sendToClient("/dilemma-game/clients/private/direct", apiResponse.getData().getThePlayer1().getPlayerSessionId(), apiResponse); //avertir le joueur 1
             //log.info("connection successfully established " + apiResponse);
             return apiResponse; //avertit le joueur 2
@@ -83,9 +85,9 @@ public class GameController {
     // Endpoint pour envoyer la décision des joueurs
     @MessageMapping("/playGame")
     @SendToUser("/dilemma-game/clients/private/direct")
-    public ApiResponse<Game> playGame(@Payload GameCreationDTO gameCreationDTO) {
+    public ApiResponse<GameDTO> playGame(@Payload GameExchangeDTO gameExchangeDTO) {
         try {
-            return findTheRightGame(gameCreationDTO.getGameId()).playGame(gameCreationDTO.getPlayerId(), gameCreationDTO.getPlayerDecision());
+            return findTheRightGame(gameExchangeDTO.getGameId()).playGame(gameExchangeDTO.getPlayerId(), gameExchangeDTO.getPlayerDecision());
         } catch (Exception e) {
             // En cas d'erreur, retourner un statut 500 (Internal Server Error)
             //TODO :""
@@ -119,9 +121,9 @@ public class GameController {
     
     @MessageMapping("/giveUp")
     @SendToUser("/dilemma-game/clients/private/direct")
-    public ApiResponse<Game> giveUpGame(@Payload GameCreationDTO gameCreationDTO) {
+    public ApiResponse<GameDTO> giveUpGame(@Payload GameExchangeDTO gameExchangeDTO) {
         try {
-            return findTheRightGame(gameCreationDTO.getGameId()).giveUpGame(gameCreationDTO.getPlayerId(), gameCreationDTO.getPlayerDecision());
+            return findTheRightGame(gameExchangeDTO.getGameId()).giveUpGame(gameExchangeDTO.getPlayerId(), gameExchangeDTO.getPlayerDecision());
         } catch (Exception e) {
             // En cas d'erreur, retourner un statut 500 (Internal Server Error)
             //TODO

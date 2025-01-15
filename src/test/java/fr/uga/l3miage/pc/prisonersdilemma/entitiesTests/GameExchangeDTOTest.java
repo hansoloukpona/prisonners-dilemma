@@ -1,29 +1,29 @@
 package fr.uga.l3miage.pc.prisonersdilemma.entitiesTests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.uga.l3miage.pc.prisonersdilemma.userside.dtos.GameCreationDTO;
+import fr.uga.l3miage.pc.prisonersdilemma.userside.dtos.GameExchangeDTO;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class GameCreationDTOTest {
+class GameExchangeDTOTest {
 
     @Test
     void testSerializationAndDeserialization() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
 
-        // Créez un objet GameCreationDTO
+        // Créez un objet GameExchangeDTO
         UUID gameId = UUID.randomUUID();
         UUID playerId = UUID.randomUUID();
-        GameCreationDTO dto = new GameCreationDTO(5, gameId, playerId, "session123", "Player1", "COOPERATE");
+        GameExchangeDTO dto = new GameExchangeDTO(5, gameId, playerId, "session123", "Player1", "COOPERATE");
 
         // Sérialisez en JSON
         String json = objectMapper.writeValueAsString(dto);
 
         // Désérialisez le JSON
-        GameCreationDTO deserializedDto = objectMapper.readValue(json, GameCreationDTO.class);
+        GameExchangeDTO deserializedDto = objectMapper.readValue(json, GameExchangeDTO.class);
 
         // Vérifiez que les valeurs restent identiques après désérialisation
         assertEquals(dto.getRounds(), deserializedDto.getRounds());

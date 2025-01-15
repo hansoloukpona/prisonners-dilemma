@@ -13,7 +13,6 @@ public class ApiResponse<T> {
     private int code;
     private String message;
 
-    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
     private T data;
     private String type;
 

@@ -1,6 +1,6 @@
 package fr.uga.l3miage.pc.prisonersdilemma.entitiesTests;
 
-import fr.uga.l3miage.pc.prisonersdilemma.userside.dtos.SimpleInformationExchange;
+import fr.uga.l3miage.pc.prisonersdilemma.userside.dtos.SimpleExchangeDTO;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -9,7 +9,7 @@ class SimpleInformationExchangeTest {
 
     @Test
     void testConstructorAndGetters() {
-        SimpleInformationExchange exchange = new SimpleInformationExchange("Alice", "Bob", "Hello!");
+        SimpleExchangeDTO exchange = new SimpleExchangeDTO("Alice", "Bob", "Hello!");
 
         assertEquals("Alice", exchange.getFrom());
         assertEquals("Bob", exchange.getTo());
@@ -18,7 +18,7 @@ class SimpleInformationExchangeTest {
 
     @Test
     void testSetters() {
-        SimpleInformationExchange exchange = new SimpleInformationExchange("Alice", "Bob", "Hello!");
+        SimpleExchangeDTO exchange = new SimpleExchangeDTO("Alice", "Bob", "Hello!");
 
         exchange.setFrom("Charlie");
         exchange.setTo("Diana");
@@ -31,14 +31,14 @@ class SimpleInformationExchangeTest {
 
     @Test
     void testEmptyContent() {
-        SimpleInformationExchange exchange = new SimpleInformationExchange("Alice", "Bob", "");
+        SimpleExchangeDTO exchange = new SimpleExchangeDTO("Alice", "Bob", "");
 
         assertEquals("", exchange.getContent());
     }
 
     @Test
     void testNullValues() {
-        SimpleInformationExchange exchange = new SimpleInformationExchange(null, null, null);
+        SimpleExchangeDTO exchange = new SimpleExchangeDTO(null, null, null);
 
         assertNull(exchange.getFrom());
         assertNull(exchange.getTo());

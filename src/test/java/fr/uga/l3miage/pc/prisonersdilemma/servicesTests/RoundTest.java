@@ -1,6 +1,7 @@
 package fr.uga.l3miage.pc.prisonersdilemma.servicesTests;
 
-import fr.uga.l3miage.pc.prisonersdilemma.businesslogic.services.Round;
+import fr.uga.l3miage.pc.prisonersdilemma.businesslogic.services.RoundServiceImpl;
+import fr.uga.l3miage.pc.prisonersdilemma.businesslogic.services.RoundServiceImpl;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -10,7 +11,7 @@ class RoundTest {
     @Test
     void testInitialization() {
         // Arrange & Act
-        Round round = new Round(2);
+        RoundServiceImpl round = new RoundServiceImpl(2);
 
         // Assert
         assertEquals(2, round.getChoiceFollower().getCount(), "ChoiceFollower should be initialized to 2");
@@ -20,7 +21,7 @@ class RoundTest {
     @Test
     void testCountAPlayerChoice() throws InterruptedException {
         // Arrange
-        Round round = new Round(2);
+        RoundServiceImpl round = new RoundServiceImpl(2);
 
         // Act
         round.countAPlayerChoice();
@@ -40,7 +41,7 @@ class RoundTest {
     @Test
     void testWaitForChoices() throws InterruptedException {
         // Arrange
-        Round round = new Round(2);
+        RoundServiceImpl round = new RoundServiceImpl(2);
 
         // Act
         Thread testThread = new Thread(() -> {
@@ -67,7 +68,7 @@ class RoundTest {
     @Test
     void testInterruptedExceptionHandlingInCountAPlayerChoice() {
         // Arrange
-        Round round = new Round(2);
+        RoundServiceImpl round = new RoundServiceImpl(2);
 
         try {
             // Act & Assert
@@ -81,7 +82,7 @@ class RoundTest {
     @Test
     void testInterruptedExceptionHandlingInWaitForChoices() {
         // Arrange
-        Round round = new Round(2);
+        RoundServiceImpl round = new RoundServiceImpl(2);
 
         try {
             // Act & Assert

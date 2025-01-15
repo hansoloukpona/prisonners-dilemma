@@ -1,6 +1,6 @@
 package fr.uga.l3miage.pc.prisonersdilemma.configs;
 
-import fr.uga.l3miage.pc.prisonersdilemma.userside.dtos.SimpleInformationExchange;
+import fr.uga.l3miage.pc.prisonersdilemma.userside.dtos.SimpleExchangeDTO;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -30,7 +30,7 @@ public class WebSocketEventListener {
             //Tout va bien
         }*/
 
-        SimpleInformationExchange message = new SimpleInformationExchange();
+        SimpleExchangeDTO message = new SimpleExchangeDTO();
         message.setContent(sessionId);
         messagingTemplate.convertAndSend("/dilemma-game/clients/private/direct-user" + sessionId , message);
     }

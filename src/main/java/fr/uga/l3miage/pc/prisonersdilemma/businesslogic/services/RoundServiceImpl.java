@@ -2,6 +2,7 @@ package fr.uga.l3miage.pc.prisonersdilemma.businesslogic.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -16,7 +17,7 @@ public class RoundServiceImpl implements RoundService {
     private boolean readyForPlayersChoices;
 
     public RoundServiceImpl(int count) {
-        // count ne doit en tout cas pas être supérieur à 2
+        // count ne doit en tout cas pas être supérieur à 2.
         this.choiceFollower = new CountDownLatch(count);
         this.readyForPlayersChoices = true;
     }

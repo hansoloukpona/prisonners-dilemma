@@ -11,7 +11,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Data
-public class GameCreationDTO {
+public class GameExchangeDTO {
 
     private int rounds;
     private UUID gameId;
