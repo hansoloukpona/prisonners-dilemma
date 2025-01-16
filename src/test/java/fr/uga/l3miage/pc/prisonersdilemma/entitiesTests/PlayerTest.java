@@ -1,11 +1,14 @@
 package fr.uga.l3miage.pc.prisonersdilemma.entitiesTests;
 
 import fr.uga.l3miage.pc.prisonersdilemma.businesslogic.entities.Player;
-import fr.uga.l3miage.pc.prisonersdilemma.businesslogic.services.strategies.Strategy;
 import fr.uga.l3miage.pc.prisonersdilemma.businesslogic.services.strategies.Decision;
+import fr.uga.l3miage.pc.prisonersdilemma.businesslogic.services.strategies.Strategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -14,92 +17,128 @@ class PlayerTest {
 
     private Player player;
     private Strategy mockStrategy;
-    private SimpMessagingTemplate mockSimpMessagingTemplate;
 
     @BeforeEach
     void setUp() {
         mockStrategy = mock(Strategy.class);
-        mockSimpMessagingTemplate = mock(SimpMessagingTemplate.class);
         player = new Player("TestPlayer");
-    }
-
-    @Test
-    void constructorInitializesFieldsCorrectly() {
-        assertEquals("TestPlayer", player.getName());
-        assertTrue(player.isConnected());
-        assertNotNull(player.getPlayerId());
-    }
-
-    @Test
-    void playReturnsStrategyDecisionWhenNotConnected() {
-        player.setConnected(false);
         player.setStrategy(mockStrategy);
+    }
 
-        when(mockStrategy.nextMove()).thenReturn(Decision.COOPERATE);
+    @Test
+    void testPlay_withStrategy() {
+        // Arrange
+        when(mockStrategy.nextMove()).thenReturn(Decision.BETRAY);
 
+        // Act
         Decision decision = player.play();
 
-        assertEquals(Decision.COOPERATE, decision);
+        // Assert
+        assertEquals(Decision.BETRAY, decision);
         verify(mockStrategy, times(1)).nextMove();
     }
 
-    //TODO
-    /*@Test
-    void playDoesNothingWhenConnected() {
-        player.setConnected(true);
-        player.setStrategy(mockStrategy);
-
-        Decision decision = player.play();
-
-        assertNull(decision);
-        verify(mockStrategy, never()).nextMove();
-    }*/
-
     @Test
-    void sendToPlayerSendsMessageIfConnected() {
+    void testPlay_withoutStrategy() {
         // Arrange
-        player.setConnected(true);
-        player.setPlayerSessionId("session123");
-        String message = "Test Message";
+        player.setStrategy(null);
 
         // Act
-        player.sendToPlayer(mockSimpMessagingTemplate, message);
+        Decision decision = player.play();
 
         // Assert
-        verify(mockSimpMessagingTemplate).convertAndSend(
-                "/dilemma-game/clients/private/direct-usersession123",
-                message
-        );
+        assertEquals(Decision.COOPERATE, decision);
     }
 
+    @Test
+    void testSendToPlayer_whenConnected() {
+        // Arrange
+        SimpMessagingTemplate simpMessagingTemplate = mock(SimpMessagingTemplate.class);
+        Object message = "TestMessage";
+        player.setConnected(true);
+        player.setPlayerSessionId("session-id");
+
+        // Act
+        player.sendToPlayer(simpMessagingTemplate, message);
+
+        // Assert
+        verify(simpMessagingTemplate, times(1)).convertAndSendToUser(eq("session-id"), any(), eq(message));
+    }
 
     @Test
-    void sendToPlayerDoesNothingIfNotConnected() {
+    void testSendToPlayer_whenNotConnected() {
+        // Arrange
+        SimpMessagingTemplate simpMessagingTemplate = mock(SimpMessagingTemplate.class);
+        Object message = "TestMessage";
         player.setConnected(false);
 
-        player.sendToPlayer(mockSimpMessagingTemplate, "Test Message");
+        // Act
+        player.sendToPlayer(simpMessagingTemplate, message);
 
-        verify(mockSimpMessagingTemplate, never())
-                .convertAndSendToUser(anyString(), any(), any());
+        // Assert
+        verify(simpMessagingTemplate, never()).convertAndSendToUser(any(), any(), any());
     }
 
     @Test
-    void giveUpSetsStrategyAndDisconnects() {
+    void testGiveUp() {
+        // Arrange
         Strategy newStrategy = mock(Strategy.class);
 
+        // Act
         player.giveUp(newStrategy);
 
+        // Assert
         assertFalse(player.isConnected());
         assertEquals(newStrategy, player.getStrategy());
     }
 
     @Test
-    void updateScoreAddsPointsToCurrentScore() {
-        player.updateDatas(10);
-        assertEquals(10, player.getScore());
+    void testUpdateDatas() {
+        // Arrange
+        player.setActualRoundDecision(Decision.COOPERATE);
+        int initialScore = player.getScore();
+        int points = 5;
 
-        player.updateDatas(5);
-        assertEquals(15, player.getScore());
+        // Act
+        player.updateDatas(points);
+
+        // Assert
+        assertEquals(initialScore + points, player.getScore());
+        assertEquals(1, player.getPlayerDecisionsHistoric().size());
+        assertEquals(1, player.getScoresHistoric().size());
+        assertEquals(Decision.COOPERATE, player.getPlayerDecisionsHistoric().get(0));
+        assertEquals(points, player.getScoresHistoric().get(0));
+    }
+
+    @Test
+    void testDefaultConstructor() {
+        // Act
+        Player newPlayer = new Player("NewPlayer");
+
+        // Assert
+        assertNotNull(newPlayer.getPlayerId());
+        assertEquals("NewPlayer", newPlayer.getName());
+        assertTrue(newPlayer.isConnected());
+        assertEquals(0, newPlayer.getScore());
+    }
+
+    @Test
+    void testSettersAndGetters() {
+        // Arrange
+        UUID newId = UUID.randomUUID();
+        String newName = "UpdatedPlayer";
+        Strategy newStrategy = mock(Strategy.class);
+
+        // Act
+        player.setPlayerId(newId);
+        player.setName(newName);
+        player.setStrategy(newStrategy);
+        player.setConnected(false);
+
+        // Assert
+        assertEquals(newId, player.getPlayerId());
+        assertEquals(newName, player.getName());
+        assertEquals(newStrategy, player.getStrategy());
+        assertFalse(player.isConnected());
     }
 }
-
